@@ -444,55 +444,103 @@
 
     .pro-section { border-top: 1px solid var(--border); }
 
-    .pro-card {
-      background: linear-gradient(135deg, rgba(245,166,35,0.06) 0%, rgba(0,229,160,0.04) 100%);
-      border: 1px solid rgba(245,166,35,0.2);
-      border-radius: 16px;
-      padding: 56px 48px;
+    .pricing-grid {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 32px;
-      align-items: center;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 960px;
+      margin: 0 auto;
     }
 
-    @media (max-width: 640px) { .pro-card { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) { .pricing-grid { grid-template-columns: 1fr; max-width: 420px; } }
 
-    .pro-title { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
-    .pro-title em { font-style: normal; color: var(--amber); }
-    .pro-desc { color: var(--muted); font-size: 14px; line-height: 1.8; max-width: 440px; }
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
 
-    .pro-price {
+    .pricing-card.featured {
+      border-color: rgba(245,166,35,0.4);
+      background: linear-gradient(135deg, rgba(245,166,35,0.06) 0%, rgba(0,229,160,0.03) 100%);
+    }
+
+    .pricing-card.enterprise {
+      border-color: rgba(100,160,255,0.3);
+      background: linear-gradient(135deg, rgba(100,160,255,0.05) 0%, rgba(0,229,160,0.02) 100%);
+    }
+
+    .pricing-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .badge-free { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
+    .badge-pro  { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
+    .badge-ent  { background: rgba(100,160,255,0.1); color: #7aadff; border: 1px solid rgba(100,160,255,0.25); }
+
+    .pricing-price {
       font-family: 'Inter', sans-serif;
-      font-size: 42px;
+      font-size: 40px;
       font-weight: 800;
-      color: var(--amber);
-      margin: 16px 0 4px;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
     }
 
-    .pro-price span { font-size: 16px; color: var(--muted); font-weight: 400; }
+    .pricing-price.free  { color: var(--accent); }
+    .pricing-price.pro   { color: var(--amber); }
+    .pricing-price.ent   { color: #7aadff; }
 
-    .pro-features { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .pricing-period { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 
-    .pro-feat { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text); }
-    .pro-feat::before { content: '→'; color: var(--amber); font-size: 12px; }
+    .pricing-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
 
-    .btn-pro {
-      display: inline-flex;
+    .pricing-feats { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; flex: 1; }
+
+    .pricing-feat { display: flex; align-items: flex-start; gap: 9px; font-size: 13px; color: var(--text); }
+    .pricing-feat::before { content: '→'; font-size: 11px; margin-top: 2px; flex-shrink: 0; }
+    .feat-free::before  { color: var(--accent); }
+    .feat-pro::before   { color: var(--amber); }
+    .feat-ent::before   { color: #7aadff; }
+
+    .btn-pricing {
+      display: flex;
       align-items: center;
-      gap: 10px;
-      background: var(--amber);
-      color: #0b0e11;
-      padding: 14px 28px;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
       border-radius: 6px;
       font-family: 'Inter', sans-serif;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
       text-decoration: none;
-      white-space: nowrap;
       transition: opacity 0.2s, transform 0.15s;
+      margin-top: auto;
     }
 
-    .btn-pro:hover { opacity: 0.88; transform: translateY(-2px); }
+    .btn-pricing:hover { opacity: 0.85; transform: translateY(-2px); }
+    .btn-free { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
+    .btn-pro-buy { background: var(--amber); color: #0b0e11; }
+    .btn-ent  { background: #7aadff; color: #0b0e11; }
+
+    /* keep old btn-pro for footer link */
+    .btn-pro { color: var(--amber); text-decoration: none; }
+    .btn-pro:hover { text-decoration: underline; }
+
+    .pro-title { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+    .pro-title em { font-style: normal; color: var(--amber); }
 
     .shields {
       display: flex;
@@ -792,21 +840,64 @@
 
 <section class="pro-section" id="pro">
   <div class="section-inner">
-    <div class="pro-card reveal">
-      <div>
-        <span class="section-label">// pro tier</span>
-        <h2 class="pro-title">Scale to your entire<br/><em>organisation</em></h2>
-        <div class="pro-price">$10<span>/month</span></div>
-        <p class="pro-desc">Pro unlocks org-wide scanning and automated Confluence sync. Perfect for teams managing docs across dozens of repos.</p>
-        <div class="pro-features">
-          <div class="pro-feat">Scan all repos in a GitHub org at once</div>
-          <div class="pro-feat">Write docs back to Confluence automatically</div>
-          <div class="pro-feat">License key via Polar.sh — instant activation</div>
+    <span class="section-label">// pricing</span>
+    <h2 class="pro-title" style="margin-bottom:8px;">Simple, transparent <em>pricing</em></h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:48px;">Start free. Upgrade when you need more.</p>
+
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="pricing-card reveal">
+        <span class="pricing-badge badge-free">Free</span>
+        <div class="pricing-price free">$0</div>
+        <div class="pricing-period">forever</div>
+        <p class="pricing-desc">For individual developers who want to keep their docs healthy.</p>
+        <div class="pricing-feats">
+          <div class="pricing-feat feat-free">Scan repo for stale docs</div>
+          <div class="pricing-feat feat-free">Query docs with natural language</div>
+          <div class="pricing-feat feat-free">Claude-powered doc suggestions</div>
+          <div class="pricing-feat feat-free">C#, TypeScript, JS, Python, Go</div>
         </div>
+        <a href="https://www.nuget.org/packages/LivingDocs.Mcp" target="_blank" class="btn-pricing btn-free">
+          Install Free →
+        </a>
       </div>
-      <a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank" class="btn-pro">
-        Get Pro License →
-      </a>
+
+      <!-- Pro -->
+      <div class="pricing-card featured reveal">
+        <span class="pricing-badge badge-pro">Pro</span>
+        <div class="pricing-price pro">$10</div>
+        <div class="pricing-period">per month</div>
+        <p class="pricing-desc">For teams managing docs across multiple repos and Confluence spaces.</p>
+        <div class="pricing-feats">
+          <div class="pricing-feat feat-pro">Everything in Free</div>
+          <div class="pricing-feat feat-pro">Scan all repos in a GitHub org</div>
+          <div class="pricing-feat feat-pro">Sync docs to Confluence automatically</div>
+          <div class="pricing-feat feat-pro">Instant activation via Polar.sh</div>
+        </div>
+        <a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank" class="btn-pricing btn-pro-buy">
+          Get Pro License →
+        </a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card enterprise reveal">
+        <span class="pricing-badge badge-ent">Enterprise</span>
+        <div class="pricing-price ent">Custom</div>
+        <div class="pricing-period">annual or one-time</div>
+        <p class="pricing-desc">For large teams needing air-gapped deployments and bring-your-own LLM.</p>
+        <div class="pricing-feats">
+          <div class="pricing-feat feat-ent">Everything in Pro</div>
+          <div class="pricing-feat feat-ent">Offline license — no internet required</div>
+          <div class="pricing-feat feat-ent">Azure OpenAI / on-prem LLM support</div>
+          <div class="pricing-feat feat-ent">Self-contained binary (no .NET SDK)</div>
+          <div class="pricing-feat feat-ent">Priority support &amp; custom invoicing</div>
+        </div>
+        <a href="mailto:support@novaders.com?subject=LivingDocs Enterprise" class="btn-pricing btn-ent">
+          Contact Us →
+        </a>
+      </div>
+
     </div>
   </div>
 </section>
@@ -819,6 +910,7 @@
     <li><a href="https://github.com/dinesh-mys/livingdocs/issues" target="_blank">Issues</a></li>
     <li><a href="https://github.com/dinesh-mys/livingdocs/discussions" target="_blank">Discussions</a></li>
     <li><a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank">Pro</a></li>
+    <li><a href="mailto:support@novaders.com?subject=LivingDocs Enterprise">Enterprise</a></li>
   </ul>
   <span class="footer-copy">MIT License · Built by Novaders LLP</span>
 </footer>
