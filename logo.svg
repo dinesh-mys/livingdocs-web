@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <defs>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3DBC7F"/>
+      <stop offset="100%" stop-color="#2A8A5A"/>
+    </linearGradient>
+    <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2E3D36"/>
+      <stop offset="100%" stop-color="#1E2924"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="3" dy="5" stdDeviation="8" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+    <filter id="glow">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#3DBC7F" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <!-- Background with subtle radial vignette -->
+  <rect width="240" height="240" fill="#0F1A14" rx="28"/>
+  <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+    <stop offset="0%" stop-color="#1A2E22" stop-opacity="0.6"/>
+    <stop offset="100%" stop-color="#0A1210" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="240" height="240" fill="url(#vignette)" rx="28"/>
+
+  <!-- Centered document — scaled up and centered in 240x240 -->
+  <!-- Doc: original 72x92 → scale ~1.9 → 137x175, centered at 120,120 → x=51, y=32 -->
+  <g filter="url(#shadow)" transform="translate(51, 28)">
+    <rect x="0" y="0" width="137" height="175" rx="14" fill="url(#docGrad)"/>
+    <!-- Folded corner -->
+    <path d="M99 0 L137 0 L137 72 Z" fill="#2A3530"/>
+    <path d="M99 0 L137 72 L99 72 Z" fill="#151F1A"/>
+    <!-- Lines -->
+    <line x1="18" y1="90"  x2="80"  y2="90"  stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+    <line x1="18" y1="112" x2="112" y2="112" stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+    <line x1="18" y1="134" x2="100" y2="134" stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+    <line x1="18" y1="156" x2="72"  y2="156" stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Leaf — positioned top-right of doc -->
+  <!-- Original leaf path from ~(72,22) scaled ~1.9 and shifted -->
+  <g filter="url(#glow)" transform="translate(51, 28)">
+    <!-- Leaf: M72 22 C82 5, 108 8, 104 30 C100 50, 76 46, 72 22 Z scaled 1.9 -->
+    <path d="M99 0 C118 -32, 184 -25, 176 38 C168 100, 114 90, 99 0 Z" fill="url(#leafGrad)"/>
+    <!-- Main vein -->
+    <path d="M99 0 C128 28, 160 55, 176 38" fill="none" stroke="#fff" stroke-width="2" opacity="0.35" stroke-linecap="round"/>
+    <!-- Side veins -->
+    <path d="M111 20 C120 10, 130 8, 137 5"  fill="none" stroke="#fff" stroke-width="1.5" opacity="0.25" stroke-linecap="round"/>
+    <path d="M121 44 C132 34, 146 32, 154 30" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.25" stroke-linecap="round"/>
+    <!-- Stem -->
+    <path d="M99 0 C97 10, 95 28, 95 50" fill="none" stroke="#2A8A5A" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+</svg>
