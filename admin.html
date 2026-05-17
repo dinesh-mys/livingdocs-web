@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LivingDocs — Admin Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0e11;
+      --surface: #111519;
+      --surface2: #161b21;
+      --border: #1e2730;
+      --accent: #00e5a0;
+      --accent2: #00b87a;
+      --amber: #f5a623;
+      --red: #ff4f4f;
+      --text: #e8edf2;
+      --muted: #5a6a78;
+      --dim: #2a3540;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Login ── */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 40px;
+      width: 360px;
+      text-align: center;
+    }
+
+    .login-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .login-logo span { color: var(--text); }
+
+    .login-sub {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .login-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-input:focus { border-color: var(--accent); }
+
+    .login-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #0b0e11;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .login-btn:hover { background: var(--accent2); }
+
+    .login-error {
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── Dashboard ── */
+    #dashboard { display: none; }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(11,14,17,0.9);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 16px; }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    .logo span { color: var(--text); }
+
+    .header-subtitle {
+      color: var(--muted);
+      font-size: 11px;
+      border-left: 1px solid var(--border);
+      padding-left: 16px;
+    }
+
+    .refresh-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .refresh-btn:hover { color: var(--text); border-color: var(--muted); }
+
+    .main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+    /* ── Stat cards ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Two-col layout ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) { .charts-row { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+
+    .panel-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    /* ── Country bars ── */
+    .country-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .country-code {
+      width: 28px;
+      font-size: 11px;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .country-bar-wrap {
+      flex: 1;
+      height: 6px;
+      background: var(--dim);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .country-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+
+    .country-count {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* ── Right panel: cities + daily ── */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cities-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .city-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .city-name { color: var(--text); }
+    .city-count { color: var(--muted); }
+
+    /* ── Daily chart ── */
+    .daily-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 80px;
+      margin-top: 4px;
+    }
+
+    .day-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .day-bar {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 2px 2px 0 0;
+      opacity: 0.75;
+      min-height: 2px;
+      transition: height 0.4s ease;
+    }
+
+    .day-label {
+      font-size: 9px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── Recent table ── */
+    .table-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .table-count {
+      color: var(--muted);
+      font-size: 11px;
+      margin-left: 8px;
+    }
+
+    .table-filters { display: flex; gap: 8px; }
+
+    .filter-select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 5px 10px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      text-align: left;
+      font-weight: 400;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+
+    td {
+      padding: 10px 24px;
+      font-size: 12px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    td.muted { color: var(--muted); }
+
+    .loc-city { color: var(--text); font-weight: 500; }
+    .loc-country {
+      display: inline-block;
+      background: rgba(0,229,160,0.08);
+      border: 1px solid rgba(0,229,160,0.15);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 10px;
+      padding: 1px 6px;
+      margin-left: 6px;
+    }
+
+    .page-path { color: var(--accent2); }
+
+    .no-data {
+      text-align: center;
+      color: var(--muted);
+      padding: 48px 24px;
+      font-size: 13px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Living<span>Docs</span></div>
+    <div class="login-sub">Admin Analytics</div>
+    <input type="password" id="token-input" class="login-input" placeholder="Enter admin token" autocomplete="current-password" />
+    <button class="login-btn" id="login-btn">Sign In</button>
+    <div class="login-error" id="login-error">Invalid token. Try again.</div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <header>
+    <div class="header-left">
+      <div class="logo">Living<span>Docs</span></div>
+      <div class="header-subtitle" id="header-subtitle">Analytics</div>
+    </div>
+    <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
+  </header>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">Total Visits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-countries">—</div>
+        <div class="stat-label">Countries</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-today">—</div>
+        <div class="stat-label">Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-unique">—</div>
+        <div class="stat-label">Unique IPs</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <div class="panel">
+        <div class="panel-title">By Country</div>
+        <div id="country-chart"></div>
+      </div>
+      <div class="right-col">
+        <div class="panel">
+          <div class="panel-title">Top Cities</div>
+          <div class="cities-list" id="cities-list"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Daily Visits (last 14 days)</div>
+          <div class="daily-chart" id="daily-chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent visits -->
+    <div class="table-panel">
+      <div class="table-header">
+        <div>
+          <span class="table-title">Recent Visits</span>
+          <span class="table-count" id="table-count"></span>
+        </div>
+        <div class="table-filters">
+          <select class="filter-select" id="filter-country">
+            <option value="">All countries</option>
+          </select>
+          <select class="filter-select" id="filter-city">
+            <option value="">All cities</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Location</th>
+              <th>Page</th>
+              <th>Referrer</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody id="visits-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let allVisits = [];
+  let adminToken = '';
+
+  // ── Auth ──
+  document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('token-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') login();
+  });
+
+  async function login() {
+    const token = document.getElementById('token-input').value.trim();
+    if (!token) return;
+
+    const btn = document.getElementById('login-btn');
+    btn.innerHTML = '<span class="spinner"></span>Signing in…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`/api/analytics?token=${encodeURIComponent(token)}`);
+      if (res.status === 401) {
+        document.getElementById('login-error').style.display = 'block';
+        btn.innerHTML = 'Sign In';
+        btn.disabled = false;
+        return;
+      }
+      const data = await res.json();
+      adminToken = token;
+      allVisits = data.visits || [];
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      render();
+    } catch {
+      document.getElementById('login-error').textContent = 'Connection error. Try again.';
+      document.getElementById('login-error').style.display = 'block';
+      btn.innerHTML = 'Sign In';
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('refresh-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('refresh-btn');
+    btn.innerHTML = '<span class="spinner"></span>';
+    try {
+      const res = await fetch(`/api/analytics?token=${encodeURIComponent(adminToken)}`);
+      const data = await res.json();
+      allVisits = data.visits || [];
+      render();
+    } finally {
+      btn.innerHTML = '↻ Refresh';
+    }
+  });
+
+  // ── Render ──
+  function render() {
+    const visits = allVisits;
+
+    // Subtitle
+    document.getElementById('header-subtitle').textContent =
+      `livingdocs.vercel.app — ${visits.length} total visits`;
+
+    // Stats
+    const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+    const todayCount = visits.filter(v => v.ts >= todayStart.getTime()).length;
+    const uniqueIPs = new Set(visits.map(v => v.ip)).size;
+    const uniqueCountries = new Set(visits.map(v => v.country).filter(Boolean)).size;
+
+    document.getElementById('stat-total').textContent = visits.length.toLocaleString();
+    document.getElementById('stat-countries').textContent = uniqueCountries;
+    document.getElementById('stat-today').textContent = todayCount;
+    document.getElementById('stat-unique').textContent = uniqueIPs.toLocaleString();
+
+    // Country counts
+    const countryCounts = {};
+    for (const v of visits) {
+      if (v.country) countryCounts[v.country] = (countryCounts[v.country] || 0) + 1;
+    }
+    const sortedCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]);
+
+    // Country chart
+    const maxCount = sortedCountries[0]?.[1] || 1;
+    const countryChart = document.getElementById('country-chart');
+    countryChart.innerHTML = sortedCountries.slice(0, 10).map(([code, count]) => `
+      <div class="country-row">
+        <div class="country-code">${code}</div>
+        <div class="country-bar-wrap">
+          <div class="country-bar" style="width:${Math.round((count / maxCount) * 100)}%"></div>
+        </div>
+        <div class="country-count">${count.toLocaleString()} (${Math.round((count / visits.length) * 100)}%)</div>
+      </div>
+    `).join('') || '<div class="no-data">No data yet</div>';
+
+    // Top cities
+    const cityCounts = {};
+    for (const v of visits) {
+      if (v.city) {
+        const key = v.country ? `${v.city}, ${v.country}` : v.city;
+        cityCounts[key] = (cityCounts[key] || 0) + 1;
+      }
+    }
+    const sortedCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    document.getElementById('cities-list').innerHTML = sortedCities.map(([city, count]) => `
+      <div class="city-row">
+        <span class="city-name">${city}</span>
+        <span class="city-count">${count.toLocaleString()}</span>
+      </div>
+    `).join('') || '<div style="color:var(--muted);font-size:12px;">No data yet</div>';
+
+    // Daily chart (last 14 days)
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      days.push(d.toISOString().slice(0, 10));
+    }
+    const dailyCounts = {};
+    days.forEach(d => { dailyCounts[d] = 0; });
+    for (const v of visits) {
+      const key = new Date(v.ts).toISOString().slice(0, 10);
+      if (key in dailyCounts) dailyCounts[key]++;
+    }
+    const dailyMax = Math.max(...Object.values(dailyCounts), 1);
+    document.getElementById('daily-chart').innerHTML = days.map(d => {
+      const count = dailyCounts[d];
+      const pct = Math.round((count / dailyMax) * 100);
+      const label = d.slice(5); // MM-DD
+      return `
+        <div class="day-bar-wrap" title="${d}: ${count} visit${count !== 1 ? 's' : ''}">
+          <div class="day-bar" style="height:${Math.max(pct, 2)}%"></div>
+          <div class="day-label">${label.replace('-', '/')}</div>
+        </div>
+      `;
+    }).join('');
+
+    // Populate filters
+    populateFilters(sortedCountries, sortedCities);
+    renderTable();
+  }
+
+  function populateFilters(sortedCountries, sortedCities) {
+    const countrySel = document.getElementById('filter-country');
+    const currentCountry = countrySel.value;
+    countrySel.innerHTML = '<option value="">All countries</option>' +
+      sortedCountries.map(([code]) => `<option value="${code}">${code}</option>`).join('');
+    countrySel.value = currentCountry;
+
+    const citySel = document.getElementById('filter-city');
+    const currentCity = citySel.value;
+    const allCities = [...new Set(allVisits.map(v => v.city).filter(Boolean))].sort();
+    citySel.innerHTML = '<option value="">All cities</option>' +
+      allCities.map(c => `<option value="${c}">${c}</option>`).join('');
+    citySel.value = currentCity;
+  }
+
+  document.getElementById('filter-country').addEventListener('change', renderTable);
+  document.getElementById('filter-city').addEventListener('change', renderTable);
+
+  function renderTable() {
+    const filterCountry = document.getElementById('filter-country').value;
+    const filterCity = document.getElementById('filter-city').value;
+
+    let filtered = allVisits;
+    if (filterCountry) filtered = filtered.filter(v => v.country === filterCountry);
+    if (filterCity) filtered = filtered.filter(v => v.city === filterCity);
+
+    document.getElementById('table-count').textContent = `${filtered.length} rows`;
+
+    const tbody = document.getElementById('visits-tbody');
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="no-data">No visits yet</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.slice(0, 200).map(v => {
+      const time = new Date(v.ts);
+      const timeStr = time.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) +
+        ', ' + time.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      const city = v.city || '—';
+      const country = v.country || '';
+      const page = v.page || '/';
+      const ref = v.referrer ? new URL(v.referrer).hostname : '—';
+      const ip = v.ip ? v.ip.replace(/\.\d+$/, '.***') : '—';
+
+      return `<tr>
+        <td class="muted">${timeStr}</td>
+        <td>
+          <span class="loc-city">${city}</span>
+          ${country ? `<span class="loc-country">${country}</span>` : ''}
+        </td>
+        <td><span class="page-path">${page}</span></td>
+        <td class="muted">${ref}</td>
+        <td class="muted">${ip}</td>
+      </tr>`;
+    }).join('');
+  }
+</script>
+
+</body>
+</html>
