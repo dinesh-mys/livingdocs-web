@@ -1,5 +1,12 @@
 {
   "buildCommand": null,
   "outputDirectory": ".",
-  "framework": null
+  "framework": null,
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/admin", "dest": "/admin.html" },
+    { "src": "/admin.html", "dest": "/admin.html" },
+    { "src": "/(.*\\.html)", "dest": "/$1" },
+    { "src": "/", "dest": "/index.html" }
+  ]
 }
