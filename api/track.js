@@ -15,7 +15,6 @@ export default async function handler(req) {
   const city = req.headers.get('x-vercel-ip-city') || '';
   const ua = req.headers.get('user-agent') || '';
 
-  // Skip obvious bots
   if (/bot|crawler|spider|headless|preview|lighthouse|pingdom/i.test(ua)) {
     return new Response(JSON.stringify({ ok: true, skipped: true }), { status: 200, headers: cors });
   }
@@ -28,32 +27,20 @@ export default async function handler(req) {
     referrer = body.referrer || '';
   } catch {}
 
-  const visit = JSON.stringify({
-    ts: Date.now(),
-    ip,
-    country,
-    city: decodeURIComponent(city),
-    page,
-    referrer,
-    ua,
+  const dbUrl = new URL(process.env.DATABASE_URL);
+
+  await fetch(`https://${dbUrl.hostname}/sql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${dbUrl.password}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `INSERT INTO visits (ts, ip, country, city, page, referrer, ua)
+              VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      params: [Date.now(), ip, country, decodeURIComponent(city), page, referrer, ua],
+    }),
   });
-
-  const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
-  const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  if (REDIS_URL && REDIS_TOKEN) {
-    await fetch(`${REDIS_URL}/pipeline`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${REDIS_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify([
-        ['LPUSH', 'ld:visits', visit],
-        ['LTRIM', 'ld:visits', '0', '4999'],
-      ]),
-    });
-  }
 
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,

@@ -8,24 +8,33 @@ export default async function handler(req) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
-  const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const dbUrl = new URL(process.env.DATABASE_URL);
 
-  if (!REDIS_URL || !REDIS_TOKEN) {
-    return new Response(JSON.stringify({ visits: [] }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  const res = await fetch(`${REDIS_URL}/lrange/ld:visits/0/4999`, {
-    headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
+  const res = await fetch(`https://${dbUrl.hostname}/sql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${dbUrl.password}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `SELECT ts, ip, country, city, page, referrer, ua
+              FROM visits
+              ORDER BY ts DESC
+              LIMIT 5000`,
+      params: [],
+    }),
   });
-  const data = await res.json();
 
-  const visits = (data.result || [])
-    .map(v => { try { return JSON.parse(v); } catch { return null; } })
-    .filter(Boolean);
+  const data = await res.json();
+  const visits = (data.rows || []).map(r => ({
+    ts: Number(r.ts),
+    ip: r.ip,
+    country: r.country,
+    city: r.city,
+    page: r.page,
+    referrer: r.referrer,
+    ua: r.ua,
+  }));
 
   return new Response(JSON.stringify({ visits }), {
     status: 200,
