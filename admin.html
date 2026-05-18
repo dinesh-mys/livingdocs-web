@@ -521,6 +521,28 @@
   let allVisits = [];
   let adminToken = '';
 
+  // ── Auto-login from saved token ──
+  const savedToken = localStorage.getItem('ld_admin_token');
+  if (savedToken) {
+    adminToken = savedToken;
+    autoLogin(savedToken);
+  }
+
+  async function autoLogin(token) {
+    try {
+      const res = await fetch(`/api/analytics?token=${encodeURIComponent(token)}`);
+      if (res.ok) {
+        const data = await res.json();
+        allVisits = data.visits || [];
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        render();
+      } else {
+        localStorage.removeItem('ld_admin_token');
+      }
+    } catch {}
+  }
+
   // ── Auth ──
   document.getElementById('login-btn').addEventListener('click', login);
   document.getElementById('token-input').addEventListener('keydown', e => {
@@ -545,6 +567,7 @@
       }
       const data = await res.json();
       adminToken = token;
+      localStorage.setItem('ld_admin_token', token);
       allVisits = data.visits || [];
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';

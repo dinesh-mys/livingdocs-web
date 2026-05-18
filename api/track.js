@@ -1,5 +1,17 @@
 export const config = { runtime: 'edge' };
 
+async function neonQuery(hostname, password, query, params = []) {
+  const res = await fetch(`https://${hostname}/sql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${password}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query, params }),
+  });
+  return res.json();
+}
+
 export default async function handler(req) {
   const cors = {
     'Access-Control-Allow-Origin': '*',
@@ -28,19 +40,29 @@ export default async function handler(req) {
   } catch {}
 
   const dbUrl = new URL(process.env.DATABASE_URL);
+  const hostname = dbUrl.hostname;
+  const password = decodeURIComponent(dbUrl.password);
 
-  await fetch(`https://${dbUrl.hostname}/sql`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${dbUrl.password}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: `INSERT INTO visits (ts, ip, country, city, page, referrer, ua)
-              VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      params: [Date.now(), ip, country, decodeURIComponent(city), page, referrer, ua],
-    }),
-  });
+  // Auto-create table if missing
+  await neonQuery(hostname, password, `
+    CREATE TABLE IF NOT EXISTS visits (
+      id bigserial PRIMARY KEY,
+      ts bigint NOT NULL,
+      ip text,
+      country text,
+      city text,
+      page text,
+      referrer text,
+      ua text,
+      created_at timestamptz DEFAULT now()
+    )
+  `);
+
+  await neonQuery(hostname, password,
+    `INSERT INTO visits (ts, ip, country, city, page, referrer, ua)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [Date.now(), ip, country, decodeURIComponent(city), page, referrer, ua]
+  );
 
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,
