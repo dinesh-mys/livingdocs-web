@@ -42,6 +42,16 @@ export default function Home() {
           LivingDocs detects stale doc comments, answers questions about your codebase,
           and suggests updates using Claude AI.
         </p>
+        <div className="flex justify-center mb-6">
+          <a href="https://www.producthunt.com/posts/livingdocs" target="_blank">
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=livingdocs&theme=dark"
+              alt="LivingDocs on Product Hunt"
+              width="250"
+              height="54"
+            />
+          </a>
+        </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <div className="bg-[#161b22] border border-white/10 rounded-lg px-6 py-3 text-[#7ee787] text-sm">
             dotnet tool install -g LivingDocs.Mcp
@@ -235,6 +245,7 @@ export default function Home() {
           <a href="https://github.com/dinesh-mys/livingdocs" target="_blank" className="hover:text-white transition">GitHub</a>
           <a href="https://www.nuget.org/packages/LivingDocs.Mcp" target="_blank" className="hover:text-white transition">NuGet</a>
           <a href="https://polar.sh/novaders-llp/livingdocs" target="_blank" className="hover:text-white transition">Polar</a>
+          <a href="https://www.producthunt.com/posts/livingdocs" target="_blank" className="hover:text-white transition">Product Hunt</a>
           <a href="https://github.com/dinesh-mys/livingdocs/issues" target="_blank" className="hover:text-white transition">Support</a>
         </div>
       </footer>
