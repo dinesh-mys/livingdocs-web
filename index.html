@@ -569,7 +569,7 @@
 
     footer {
       border-top: 1px solid var(--border);
-      padding: 48px;
+      padding: 56px 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -577,7 +577,7 @@
       gap: 24px;
     }
 
-    .footer-logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 20px; color: var(--accent); text-decoration: none; }
+    .footer-logo { text-decoration: none; display: flex; align-items: center; }
     .footer-links { display: flex; gap: 24px; list-style: none; }
     .footer-links a { color: var(--muted); text-decoration: none; font-size: 12px; transition: color 0.2s; }
     .footer-links a:hover { color: var(--text); }
@@ -601,6 +601,7 @@
     <li><a href="#install">Install</a></li>
     <li><a href="#integrations">Integrations</a></li>
     <li><a href="#pro">Pro</a></li>
+    <li><a href="https://www.producthunt.com/posts/livingdocs" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#ff6154;color:#fff;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">🐱 Product Hunt</a></li>
     <li><a href="https://github.com/dinesh-mys/livingdocs" class="nav-cta" target="_blank">GitHub →</a></li>
   </ul>
 </nav>
@@ -705,6 +706,11 @@
         <span class="tool-tier tier-pro">Pro</span>
         <div class="tool-name"><code>scan_org</code></div>
         <p class="tool-desc">Scan all repos in a GitHub org and return an org-wide staleness report. Track documentation health at scale.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>write_docs</code></div>
+        <p class="tool-desc">Write Claude-generated docs to <code>docs/&lt;File&gt;.md</code> with a UTC timestamp on every run. Builds a full audit trail of doc history inside your repo.</p>
       </div>
     </div>
   </div>
@@ -829,6 +835,11 @@
         <div class="integration-name">Confluence <span style="color:var(--amber);font-size:11px;">Pro</span></div>
         <p class="integration-desc">Automatically sync updated docs to Confluence pages. Creates pages that don't yet exist.</p>
       </div>
+      <div class="integration-card">
+        <div class="integration-icon">🗂️</div>
+        <div class="integration-name">Git Repo <span style="color:var(--amber);font-size:11px;">Pro</span></div>
+        <p class="integration-desc">Write Claude-generated docs to <code>docs/&lt;File&gt;.md</code> inside your repo. Timestamped on every run — no external tools needed.</p>
+      </div>
     </div>
     <div style="margin-top: 56px;" class="reveal">
       <span class="section-label">// supported languages</span>
@@ -873,16 +884,17 @@
       <div class="pricing-card featured reveal">
         <span class="pricing-badge badge-pro">Pro</span>
         <div class="pricing-price pro">$10</div>
-        <div class="pricing-period">per month</div>
-        <p class="pricing-desc">For teams managing docs across multiple repos and Confluence spaces.</p>
+        <div class="pricing-period">per month · <span style="color:var(--accent);">7-day free trial</span></div>
+        <p class="pricing-desc">For teams who want docs that stay in sync — in your repo or Confluence.</p>
         <div class="pricing-feats">
           <div class="pricing-feat feat-pro">Everything in Free</div>
+          <div class="pricing-feat feat-pro">Write docs to .md files with timestamps</div>
           <div class="pricing-feat feat-pro">Scan all repos in a GitHub org</div>
           <div class="pricing-feat feat-pro">Sync docs to Confluence automatically</div>
           <div class="pricing-feat feat-pro">Instant activation via Polar.sh</div>
         </div>
         <a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank" class="btn-pricing btn-pro-buy">
-          Get Pro License →
+          Start 7-Day Free Trial →
         </a>
       </div>
 
@@ -908,8 +920,36 @@
   </div>
 </section>
 
+<section id="sla" style="background:var(--surface2); border-top:1px solid var(--border); padding:80px 48px;">
+  <div style="max-width:760px; margin:0 auto;">
+    <span class="section-label">// service level agreement</span>
+    <h2 class="section-title" style="font-size:32px; margin-top:12px;">SLA &amp; Support</h2>
+    <div style="color:var(--muted); font-size:15px; line-height:1.8; margin-top:24px;">
+      <p><strong style="color:var(--text);">Response times</strong></p>
+      <ul style="margin:12px 0 24px 20px;">
+        <li>Bug reports — acknowledged within <strong style="color:var(--text);">48 hours</strong></li>
+        <li>Security issues — acknowledged within <strong style="color:var(--text);">24 hours</strong></li>
+        <li>Feature requests — reviewed within <strong style="color:var(--text);">5 business days</strong></li>
+        <li>Enterprise support — priority response within <strong style="color:var(--text);">12 hours</strong></li>
+      </ul>
+      <p><strong style="color:var(--text);">Support channels</strong></p>
+      <ul style="margin:12px 0 24px 20px;">
+        <li>GitHub Issues — <a href="https://github.com/dinesh-mys/livingdocs/issues" style="color:var(--accent);">github.com/dinesh-mys/livingdocs/issues</a></li>
+        <li>Email — <a href="mailto:dinesh@novaders.com" style="color:var(--accent);">dinesh@novaders.com</a></li>
+        <li>GitHub Discussions — <a href="https://github.com/dinesh-mys/livingdocs/discussions" style="color:var(--accent);">github.com/dinesh-mys/livingdocs/discussions</a></li>
+      </ul>
+      <p><strong style="color:var(--text);">Uptime</strong></p>
+      <ul style="margin:12px 0 24px 20px;">
+        <li>LivingDocs runs as a local MCP server — no hosted infrastructure, no downtime dependency</li>
+        <li>NuGet package availability follows NuGet.org SLA</li>
+      </ul>
+      <p style="margin-top:24px; font-size:13px;">Last updated: 2026-05-19 · Novaders LLP</p>
+    </div>
+  </div>
+</section>
+
 <footer>
-  <a href="#" class="footer-logo">LivingDocs</a>
+  <a href="#" class="footer-logo"><img src="/logo.svg" alt="LivingDocs" height="48" style="display:block;" /></a>
   <ul class="footer-links">
     <li><a href="https://github.com/dinesh-mys/livingdocs" target="_blank">GitHub</a></li>
     <li><a href="https://www.nuget.org/packages/LivingDocs.Mcp" target="_blank">NuGet</a></li>
@@ -917,6 +957,8 @@
     <li><a href="https://github.com/dinesh-mys/livingdocs/discussions" target="_blank">Discussions</a></li>
     <li><a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank">Pro</a></li>
     <li><a href="mailto:dinesh@novaders.com?subject=LivingDocs Enterprise">Enterprise</a></li>
+    <li><a href="/privacy" target="_blank">Privacy Policy</a></li>
+    <li><a href="/terms" target="_blank">Terms of Service</a></li>
   </ul>
   <span class="footer-copy">MIT License · Built by Novaders LLP</span>
 </footer>
