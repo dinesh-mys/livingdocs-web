@@ -66,7 +66,12 @@
       color: var(--accent);
       letter-spacing: -0.5px;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
+
+    .nav-logo img { width: 28px; height: 28px; display: block; }
 
     .nav-logo span { color: var(--text); }
 
@@ -546,7 +551,37 @@
 <body>
 
 <nav>
-  <a href="#" class="nav-logo">Living<span>Docs</span></a>
+  <a href="#" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="28" height="28">
+      <defs>
+        <linearGradient id="lNavLeaf" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#3DBC7F"/>
+          <stop offset="100%" stop-color="#2A8A5A"/>
+        </linearGradient>
+        <linearGradient id="lNavDoc" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#2E3D36"/>
+          <stop offset="100%" stop-color="#1E2924"/>
+        </linearGradient>
+        <filter id="lNavShadow"><feDropShadow dx="3" dy="5" stdDeviation="8" flood-color="#000" flood-opacity="0.45"/></filter>
+        <filter id="lNavGlow"><feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#3DBC7F" flood-opacity="0.55"/></filter>
+      </defs>
+      <g filter="url(#lNavShadow)" transform="translate(51,28)">
+        <rect x="0" y="0" width="137" height="175" rx="14" fill="url(#lNavDoc)"/>
+        <path d="M99 0 L137 0 L137 72 Z" fill="#2A3530"/>
+        <path d="M99 0 L137 72 L99 72 Z" fill="#151F1A"/>
+        <line x1="18" y1="90"  x2="80"  y2="90"  stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="18" y1="112" x2="112" y2="112" stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="18" y1="134" x2="100" y2="134" stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="18" y1="156" x2="72"  y2="156" stroke="#4A6357" stroke-width="4.5" stroke-linecap="round"/>
+      </g>
+      <g filter="url(#lNavGlow)" transform="translate(51,28)">
+        <path d="M99 0 C118 -32, 184 -25, 176 38 C168 100, 114 90, 99 0 Z" fill="url(#lNavLeaf)"/>
+        <path d="M99 0 C128 28, 160 55, 176 38" fill="none" stroke="#fff" stroke-width="2" opacity="0.35" stroke-linecap="round"/>
+        <path d="M99 0 C97 10, 95 28, 95 50" fill="none" stroke="#2A8A5A" stroke-width="3.5" stroke-linecap="round"/>
+      </g>
+    </svg>
+    Living<span>Docs</span>
+  </a>
   <ul class="nav-links">
     <li><a href="#tools">Tools</a></li>
     <li><a href="#install">Install</a></li>
