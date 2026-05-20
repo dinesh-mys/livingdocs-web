@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — LivingDocs</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; color: #374151; line-height: 1.7; }
+    h1 { font-size: 2rem; font-weight: 700; color: #111827; }
+    h2 { font-size: 1.2rem; font-weight: 600; color: #111827; margin-top: 2rem; }
+    a { color: #16a34a; }
+    .meta { color: #6b7280; font-size: 0.9rem; margin-bottom: 2rem; }
+    ul { padding-left: 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    code { background: #f3f4f6; padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <p><a href="https://livingdocs.vercel.app">← Back to LivingDocs</a></p>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Last updated: May 18, 2026 · Novaders LLP</p>
+
+  <h2>1. Overview</h2>
+  <p>LivingDocs is a Confluence Forge app developed by Novaders LLP. This policy explains what data we access and how we handle it.</p>
+
+  <h2>2. Data We Access</h2>
+  <ul>
+    <li><strong>Confluence page ID</strong> — used as a key to store your repo/file configuration against a specific page. We do not read page content.</li>
+    <li><strong>GitHub repository URL and file path</strong> — entered by you, stored per page in Forge's built-in key-value storage scoped to your Confluence site.</li>
+    <li><strong>GitHub Commits API</strong> — queried on demand when you click "Check Staleness" to retrieve the last commit date for the configured file. We do not store commit data.</li>
+  </ul>
+
+  <h2>3. Data We Do Not Collect</h2>
+  <ul>
+    <li>We do not collect personal data (names, emails, IP addresses).</li>
+    <li>We do not use analytics or tracking cookies.</li>
+    <li>We do not share data with third parties except GitHub (to check commit history).</li>
+    <li>We do not store data outside of Atlassian's Forge infrastructure.</li>
+  </ul>
+
+  <h2>4. Data Storage</h2>
+  <p>Configuration data is stored using Atlassian Forge's built-in key-value storage, hosted and managed by Atlassian within their secure infrastructure, scoped to your Confluence site installation.</p>
+
+  <h2>5. Third-Party Services</h2>
+  <p>LivingDocs queries the GitHub REST API (<code>api.github.com</code>) to retrieve commit history for files you configure. Only public repository data is accessed. No authentication tokens are stored.</p>
+
+  <h2>6. Data Deletion</h2>
+  <p>Uninstalling LivingDocs from your Confluence site removes all associated configuration data from Forge storage. You may also clear settings per page using the "Reconfigure" button.</p>
+
+  <h2>7. Contact</h2>
+  <p>For privacy questions: <a href="mailto:dinesh@novaders.com">dinesh@novaders.com</a></p>
+</body>
+</html>
