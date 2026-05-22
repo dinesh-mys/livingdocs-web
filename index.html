@@ -67,7 +67,12 @@
       color: var(--accent);
       letter-spacing: -0.5px;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
+
+    .nav-logo img { width: 28px; height: 28px; display: block; }
 
     .nav-logo span { color: var(--text); }
 
@@ -610,7 +615,7 @@
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
 
-  <div class="badge">MCP Server · Claude Desktop · Claude Code · GitHub Copilot</div>
+  <div class="badge">MCP Server · Claude Desktop · Claude Code · GitHub Copilot · Slack · Teams · Email</div>
 
   <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--accent);margin-bottom:20px;animation:fadeUp 0.6s ease 0.05s both;">
     <span style="font-size:16px;">⭐</span>
@@ -620,8 +625,7 @@
   <h1>Docs that<br/><em>never go stale</em></h1>
 
   <p class="hero-sub">
-    AI-powered documentation health monitor.<br/>
-    Detects stale code comments and suggests updates using Claude.
+    AI-powered documentation health monitor. Detects stale comments, finds knowledge gaps, flags departure risk, and makes your Slack, Teams, and email searchable — all via Claude.
   </p>
 
   <div class="hero-actions">
@@ -659,16 +663,17 @@
         <div><span class="t-prompt">$ </span><span class="t-cmd">livingdocs-mcp scan /path/to/your/repo</span></div>
         <div>&nbsp;</div>
         <div><span class="t-comment">Scanning /path/to/repo ...</span></div>
-        <div><span class="t-key">Files examined</span> <span class="t-comment">:</span> <span class="t-val">12</span></div>
-        <div><span class="t-key">Stale docs    </span> <span class="t-comment">:</span> <span class="t-warn">2</span></div>
+        <div><span class="t-key">Files examined</span> <span class="t-comment">:</span> <span class="t-val">48</span>  <span class="t-key">Stale docs</span><span class="t-comment">:</span> <span class="t-warn">3</span>  <span class="t-key">Gaps</span><span class="t-comment">:</span> <span class="t-bar-full">7</span></div>
         <div>&nbsp;</div>
         <div><span class="t-bar-full">[██████████]</span><span class="t-warn">  100%</span><span class="t-cmd">  src/Tax.cs</span></div>
-        <div class="t-indent"><span class="t-comment">doc updated : 2024-09-01</span></div>
-        <div class="t-indent"><span class="t-comment">code changed: 2025-01-15</span></div>
+        <div class="t-indent"><span class="t-comment">doc updated : 2024-09-01 · code changed: 2025-01-15</span></div>
         <div>&nbsp;</div>
-        <div><span class="t-bar-part">[████░░░░░░]</span><span class="t-warn">   40%</span><span class="t-cmd">  src/Auth.cs</span></div>
-        <div class="t-indent"><span class="t-comment">doc updated : 2024-12-01</span></div>
-        <div class="t-indent"><span class="t-comment">code changed: 2025-01-28</span></div>
+        <div><span class="t-comment">Knowledge gaps (undocumented, ranked by activity):</span></div>
+        <div><span class="t-warn">  1.</span><span class="t-cmd">  src/PaymentService.cs </span><span class="t-comment">· 47 commits · last: Alice Chen</span></div>
+        <div><span class="t-warn">  2.</span><span class="t-cmd">  src/AuthMiddleware.cs </span><span class="t-comment">· 31 commits · last: Bob Smith</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-comment">Departure risk:</span></div>
+        <div><span class="t-bar-full">  ⚠</span><span class="t-cmd">  src/PaymentService.cs</span><span class="t-comment"> — Alice owns 78% of commits</span></div>
       </div>
     </div>
   </div>
@@ -679,7 +684,7 @@
     <div class="reveal">
       <span class="section-label">// tools</span>
       <h2 class="section-title">Everything you need<br/>to keep docs healthy</h2>
-      <p class="section-desc">Three free tools, two powerful Pro capabilities. Plug into your workflow via MCP.</p>
+      <p class="section-desc">Five free tools, six powerful Pro capabilities. Plug into your workflow via MCP.</p>
     </div>
     <div class="tools-grid reveal">
       <div class="tool-card">
@@ -690,12 +695,22 @@
       <div class="tool-card">
         <span class="tool-tier tier-free">Free</span>
         <div class="tool-name"><code>query_docs</code></div>
-        <p class="tool-desc">Answer natural-language questions about your codebase using its doc comments. Ask Claude what a module does.</p>
+        <p class="tool-desc">Answer natural-language questions about your codebase using its doc comments — plus any indexed Slack, Teams, or email.</p>
       </div>
       <div class="tool-card">
         <span class="tool-tier tier-free">Free</span>
         <div class="tool-name"><code>suggest_doc_update</code></div>
         <p class="tool-desc">Ask Claude to rewrite a stale doc comment with an updated, accurate description based on the current code.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-free">Free</span>
+        <div class="tool-name"><code>detect_gaps</code></div>
+        <p class="tool-desc">Find source files with no documentation at all, ranked by git commit frequency. Prioritise what matters most to document first.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-free">Free</span>
+        <div class="tool-name"><code>departure_risk</code></div>
+        <p class="tool-desc">Bus factor analysis. Flags files where one author owns ≥60% of commits — before that person leaves the team.</p>
       </div>
       <div class="tool-card">
         <span class="tool-tier tier-pro">Pro</span>
@@ -712,6 +727,21 @@
         <div class="tool-name"><code>write_docs</code></div>
         <p class="tool-desc">Write Claude-generated docs to <code>docs/&lt;File&gt;.md</code> with a UTC timestamp on every run. Builds a full audit trail of doc history inside your repo.</p>
       </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>index_slack</code></div>
+        <p class="tool-desc">Fetch messages from a Slack channel and add them to the repo knowledge index. Threads are grouped so context is preserved.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>index_teams</code></div>
+        <p class="tool-desc">Pull messages from a Microsoft Teams channel via Graph API and make them searchable alongside code docs.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>index_email</code></div>
+        <p class="tool-desc">Fetch emails from any IMAP mailbox — Gmail, Outlook, or any provider. Engineering decisions in email become searchable instantly.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -720,7 +750,7 @@
   <div class="section-inner">
     <div class="reveal">
       <span class="section-label">// how it works</span>
-      <h2 class="section-title">From stale to sharp<br/>in three steps</h2>
+      <h2 class="section-title">From scattered to<br/>searchable in minutes</h2>
     </div>
     <div class="steps">
       <div class="step reveal">
@@ -730,13 +760,18 @@
       </div>
       <div class="step reveal">
         <div class="step-num">02</div>
-        <div class="step-title">Scan for staleness</div>
-        <p class="step-desc">LivingDocs compares when doc comments were last updated vs when code changed. Returns a staleness score per file.</p>
+        <div class="step-title">Scan &amp; detect gaps</div>
+        <p class="step-desc">LivingDocs finds stale docs, undocumented hotspot files, and single points of knowledge — using git history as signal.</p>
       </div>
       <div class="step reveal">
         <div class="step-num">03</div>
         <div class="step-title">Claude writes the fix</div>
-        <p class="step-desc">Ask Claude to suggest or directly apply doc updates. It reads the current code and rewrites comments to match reality.</p>
+        <p class="step-desc">Ask Claude to rewrite stale comments, generate docs for undocumented files, or answer questions across code, Slack, and email.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div class="step-title">Connect all knowledge</div>
+        <p class="step-desc">Index Slack channels, Teams conversations, and email folders. Everything — code docs, chat, email — becomes one searchable knowledge base.</p>
       </div>
     </div>
   </div>
@@ -839,6 +874,21 @@
         <div class="integration-icon">🗂️</div>
         <div class="integration-name">Git Repo <span style="color:var(--amber);font-size:11px;">Pro</span></div>
         <p class="integration-desc">Write Claude-generated docs to <code>docs/&lt;File&gt;.md</code> inside your repo. Timestamped on every run — no external tools needed.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon" style="font-size:16px;">💬</div>
+        <div class="integration-name">Slack <span style="color:var(--amber);font-size:11px;">Pro</span></div>
+        <p class="integration-desc">Index channel messages into the repo knowledge base. Threads grouped by context. Requires <code style="font-size:11px;">SLACK_BOT_TOKEN</code>.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon" style="font-size:16px;">🟦</div>
+        <div class="integration-name">Microsoft Teams <span style="color:var(--amber);font-size:11px;">Pro</span></div>
+        <p class="integration-desc">Pull channel messages via Microsoft Graph API. Requires Azure AD app with ChannelMessage.Read.All.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon" style="font-size:16px;">📧</div>
+        <div class="integration-name">Email / IMAP <span style="color:var(--amber);font-size:11px;">Pro</span></div>
+        <p class="integration-desc">Fetch from any IMAP mailbox — Gmail, Outlook, or self-hosted. Engineering decisions buried in email, made searchable.</p>
       </div>
     </div>
     <div style="margin-top: 56px;" class="reveal">
@@ -983,6 +1033,15 @@
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+<script>
+  fetch('https://livingdocs-web.vercel.app/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ page: window.location.pathname, referrer: document.referrer }),
+    keepalive: true,
+  }).catch(() => {});
 </script>
 
 </body>
