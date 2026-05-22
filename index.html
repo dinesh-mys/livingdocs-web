@@ -1,1047 +1,820 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LivingDocs — AI-Powered Documentation Health Monitor</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0b0e11;
-      --surface: #111519;
-      --surface2: #161b21;
-      --border: #1e2730;
-      --accent: #00e5a0;
-      --accent2: #00b87a;
-      --amber: #f5a623;
-      --red: #ff4f4f;
-      --text: #e8edf2;
-      --muted: #5a6a78;
-      --dim: #2a3540;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
-
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 48px;
-      height: 60px;
-      background: rgba(11, 14, 17, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-logo {
-      font-family: 'Inter', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      color: var(--accent);
-      letter-spacing: -0.5px;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-logo img { width: 28px; height: 28px; display: block; }
-
-    .nav-logo span { color: var(--text); }
-
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--text); }
-
-    .nav-cta {
-      background: var(--accent);
-      color: #0b0e11 !important;
-      padding: 7px 18px;
-      border-radius: 4px;
-      font-weight: 500 !important;
-      transition: background 0.2s, transform 0.15s !important;
-    }
-
-    .nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px); }
-
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 100px 24px 80px;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .hero-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,229,160,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,160,0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
-    }
-
-    .hero-glow {
-      position: absolute;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 70%);
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0,229,160,0.08);
-      border: 1px solid rgba(0,229,160,0.2);
-      border-radius: 100px;
-      padding: 6px 16px;
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 32px;
-      animation: fadeUp 0.6s ease both;
-    }
-
-    .badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.7); }
-    }
-
-    h1 {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(48px, 7vw, 88px);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -2px;
-      margin-bottom: 24px;
-      animation: fadeUp 0.6s ease 0.1s both;
-    }
-
-    h1 em { font-style: normal; color: var(--accent); }
-
-    .hero-sub {
-      font-size: 16px;
-      color: var(--muted);
-      max-width: 520px;
-      line-height: 1.8;
-      margin-bottom: 48px;
-      animation: fadeUp 0.6s ease 0.2s both;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeUp 0.6s ease 0.3s both;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--accent);
-      color: #0b0e11;
-      padding: 14px 28px;
-      border-radius: 6px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 14px;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent2);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0,229,160,0.25);
-    }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: transparent;
-      color: var(--text);
-      padding: 14px 28px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 14px;
-      text-decoration: none;
-      transition: border-color 0.2s, background 0.2s, transform 0.15s;
-    }
-
-    .btn-secondary:hover { border-color: var(--muted); background: var(--surface); transform: translateY(-2px); }
-
-    .terminal-wrap {
-      margin-top: 64px;
-      width: 100%;
-      max-width: 640px;
-      animation: fadeUp 0.6s ease 0.4s both;
-    }
-
-    .terminal {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      text-align: left;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,229,160,0.05);
-    }
-
-    .terminal-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: #161b22;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-r { background: #ff5f57; }
-    .dot-y { background: #febc2e; }
-    .dot-g { background: #28c840; }
-
-    .terminal-title { flex: 1; text-align: center; font-size: 11px; color: var(--muted); }
-
-    .terminal-body { padding: 20px 24px; font-size: 13px; line-height: 2; }
-
-    .t-prompt { color: var(--accent); }
-    .t-cmd { color: var(--text); }
-    .t-comment { color: var(--muted); }
-    .t-key { color: var(--amber); }
-    .t-val { color: #79c0ff; }
-    .t-warn { color: var(--amber); }
-    .t-ok { color: var(--accent); }
-    .t-bar-full { color: var(--red); }
-    .t-bar-part { color: var(--amber); }
-    .t-indent { padding-left: 20px; }
-
-    section { position: relative; z-index: 1; }
-
-    .section-inner { max-width: 1100px; margin: 0 auto; padding: 100px 24px; }
-
-    .section-label {
-      display: inline-block;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1.1;
-      margin-bottom: 20px;
-    }
-
-    .section-desc { color: var(--muted); font-size: 14px; max-width: 520px; line-height: 1.9; }
-
-    .tools-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 48px;
-    }
-
-    .tool-card { background: var(--surface2); padding: 28px; transition: background 0.2s; }
-    .tool-card:hover { background: #1a2029; }
-
-    .tool-tier {
-      display: inline-block;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 100px;
-      margin-bottom: 16px;
-    }
-
-    .tier-free { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
-    .tier-pro { background: rgba(245,166,35,0.1); color: var(--amber); border: 1px solid rgba(245,166,35,0.2); }
-
-    .tool-name { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
-    .tool-name code { background: rgba(0,229,160,0.08); padding: 2px 8px; border-radius: 4px; color: var(--accent); font-size: 13px; }
-    .tool-desc { color: var(--muted); font-size: 13px; line-height: 1.7; }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 24px;
-      margin-top: 56px;
-    }
-
-    .step {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 32px;
-      background: var(--surface);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .step:hover { border-color: rgba(0,229,160,0.3); transform: translateY(-3px); }
-
-    .step::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .step:hover::before { opacity: 1; }
-
-    .step-num { font-family: 'Inter', sans-serif; font-size: 48px; font-weight: 800; color: var(--dim); line-height: 1; margin-bottom: 20px; }
-    .step-title { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-    .step-desc { color: var(--muted); font-size: 13px; line-height: 1.8; }
-
-    .integrations-section { border-top: 1px solid var(--border); }
-
-    .integrations-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-      margin-top: 48px;
-    }
-
-    .integration-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 28px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .integration-card:hover { border-color: rgba(0,229,160,0.25); transform: translateY(-3px); }
-
-    .integration-icon {
-      width: 40px; height: 40px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    .integration-name { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 15px; }
-    .integration-desc { color: var(--muted); font-size: 12px; line-height: 1.7; }
-
-    .langs { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 40px; }
-
-    .lang-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px 18px;
-      font-size: 13px;
-      color: var(--text);
-      transition: border-color 0.2s, color 0.2s;
-    }
-
-    .lang-tag:hover { border-color: var(--accent); color: var(--accent); }
-
-    .install-section { border-top: 1px solid var(--border); }
-
-    .install-block {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 48px;
-      max-width: 720px;
-    }
-
-    .install-tabs { display: flex; border-bottom: 1px solid var(--border); }
-
-    .tab {
-      padding: 12px 24px;
-      font-size: 12px;
-      color: var(--muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: color 0.2s, border-color 0.2s;
-      user-select: none;
-    }
-
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-    .tab-content { display: none; padding: 24px; }
-    .tab-content.active { display: block; }
-    .code-block { font-size: 13px; line-height: 2; }
-
-    .pro-section { border-top: 1px solid var(--border); }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    @media (max-width: 860px) { .pricing-grid { grid-template-columns: 1fr; max-width: 420px; } }
-
-    .pricing-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .pricing-card.featured {
-      border-color: rgba(245,166,35,0.4);
-      background: linear-gradient(135deg, rgba(245,166,35,0.06) 0%, rgba(0,229,160,0.03) 100%);
-    }
-
-    .pricing-card.enterprise {
-      border-color: rgba(100,160,255,0.3);
-      background: linear-gradient(135deg, rgba(100,160,255,0.05) 0%, rgba(0,229,160,0.02) 100%);
-    }
-
-    .pricing-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 100px;
-      margin-bottom: 20px;
-      width: fit-content;
-    }
-
-    .badge-free { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
-    .badge-pro  { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
-    .badge-ent  { background: rgba(100,160,255,0.1); color: #7aadff; border: 1px solid rgba(100,160,255,0.25); }
-
-    .pricing-price {
-      font-family: 'Inter', sans-serif;
-      font-size: 40px;
-      font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .pricing-price.free  { color: var(--accent); }
-    .pricing-price.pro   { color: var(--amber); }
-    .pricing-price.ent   { color: #7aadff; }
-
-    .pricing-period { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
-
-    .pricing-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
-
-    .pricing-feats { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; flex: 1; }
-
-    .pricing-feat { display: flex; align-items: flex-start; gap: 9px; font-size: 13px; color: var(--text); }
-    .pricing-feat::before { content: '→'; font-size: 11px; margin-top: 2px; flex-shrink: 0; }
-    .feat-free::before  { color: var(--accent); }
-    .feat-pro::before   { color: var(--amber); }
-    .feat-ent::before   { color: #7aadff; }
-
-    .btn-pricing {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 20px;
-      border-radius: 6px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 13px;
-      text-decoration: none;
-      transition: opacity 0.2s, transform 0.15s;
-      margin-top: auto;
-    }
-
-    .btn-pricing:hover { opacity: 0.85; transform: translateY(-2px); }
-    .btn-free { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
-    .btn-pro-buy { background: var(--amber); color: #0b0e11; }
-    .btn-ent  { background: #7aadff; color: #0b0e11; }
-
-    /* keep old btn-pro for footer link */
-    .btn-pro { color: var(--amber); text-decoration: none; }
-    .btn-pro:hover { text-decoration: underline; }
-
-    .pro-title { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
-    .pro-title em { font-style: normal; color: var(--amber); }
-
-    .shields {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 24px;
-      animation: fadeUp 0.6s ease 0.5s both;
-    }
-
-    .shield {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 4px;
-      overflow: hidden;
-      font-size: 11px;
-      height: 22px;
-      text-decoration: none;
-    }
-
-    .shield-l { background: #3a3a3a; color: #fff; padding: 0 8px; height: 100%; display: flex; align-items: center; }
-    .shield-r { background: var(--accent2); color: #0b0e11; padding: 0 8px; height: 100%; display: flex; align-items: center; font-weight: 600; }
-    .shield-r.blue { background: #2188ff; color: #fff; }
-    .shield-r.gray { background: #586069; color: #fff; }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 56px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-
-    .footer-logo { text-decoration: none; display: flex; align-items: center; }
-    .footer-links { display: flex; gap: 24px; list-style: none; }
-    .footer-links a { color: var(--muted); text-decoration: none; font-size: 12px; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--text); }
-    .footer-copy { color: var(--muted); font-size: 11px; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LivingDocs — Institutional Memory for Engineering Teams</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:         #f8f6f1;
+  --bg-warm:    #f2ede4;
+  --bg-dark:    #111210;
+  --bg-dark2:   #181916;
+  --ink:        #111210;
+  --ink-mid:    #3d3d38;
+  --ink-soft:   #7a7a72;
+  --ink-ghost:  #b8b8ae;
+  --rule:       rgba(17,18,16,0.1);
+  --rule-dark:  rgba(255,255,255,0.07);
+  --accent:     #d4f244;
+  --accent-dim: #8aa818;
+  --accent-dark:#c8e830;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Epilogue', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --max: 1160px;
+  --pad: clamp(24px, 5vw, 80px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--ink); overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+
+.tag-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft);
+}
+.tag-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--ink-ghost); }
+
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--pad);
+  background: rgba(248,246,241,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--rule);
+  animation: navIn 0.5s ease both;
+}
+
+.nav-logo { display: flex; align-items: center; }
+.nav-logo img { height: 36px; width: auto; }
+
+.nav-links { display: flex; align-items: center; gap: 2px; }
+.nav-a {
+  font-size: 13px; font-weight: 400; color: var(--ink-mid);
+  padding: 6px 14px; border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.nav-a:hover { color: var(--ink); background: var(--bg-warm); }
+
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  padding: 8px 18px; border-radius: 5px; cursor: pointer; border: none;
+  transition: all 0.18s; text-decoration: none; letter-spacing: 0.01em;
+}
+.btn-outline { background: transparent; color: var(--ink); border: 1.5px solid rgba(17,18,16,0.2); }
+.btn-outline:hover { border-color: var(--ink); background: var(--bg-warm); }
+.btn-solid { background: var(--ink); color: var(--accent); }
+.btn-solid:hover { background: var(--ink-mid); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(17,18,16,0.15); }
+.btn-ph {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; background: #ff6154; color: #fff;
+  border-radius: 6px; font-size: 12px; font-weight: 600;
+  transition: opacity 0.2s;
+}
+.btn-ph:hover { opacity: 0.88; }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 80px 0 0;
+  position: relative; overflow: hidden;
+}
+.hero-bg-word {
+  position: absolute; bottom: -20px; right: -40px;
+  font-family: var(--font-display); font-size: clamp(180px, 22vw, 340px);
+  font-weight: 900; font-style: italic; color: transparent;
+  -webkit-text-stroke: 1px rgba(17,18,16,0.06);
+  line-height: 1; pointer-events: none; user-select: none; white-space: nowrap;
+}
+.hero::before {
+  content: ''; position: absolute; top: 58px; right: 0;
+  width: 1px; height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--rule) 30%, var(--rule) 70%, transparent);
+}
+.hero-inner {
+  max-width: var(--max); margin: 0 auto; padding: 0 var(--pad);
+  width: 100%; display: grid; grid-template-columns: 1fr 340px;
+  gap: 60px; align-items: end; padding-bottom: 80px;
+}
+.hero-left { position: relative; z-index: 2; }
+.hero-kicker {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.13em;
+  text-transform: uppercase; color: var(--ink-soft); margin-bottom: 28px;
+  display: flex; align-items: center; gap: 12px;
+  animation: fadeUp 0.7s 0.1s ease both;
+}
+.hero-kicker-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(212,242,68,0.25); flex-shrink: 0;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+h1.hero-title {
+  font-family: var(--font-display); font-size: clamp(48px, 6.5vw, 90px);
+  font-weight: 900; line-height: 0.97; letter-spacing: -3px; color: var(--ink);
+  margin-bottom: 32px; animation: fadeUp 0.7s 0.18s ease both;
+}
+h1.hero-title em { font-style: italic; font-weight: 400; color: var(--ink-mid); }
+.hero-body {
+  font-size: 17px; line-height: 1.72; color: var(--ink-mid); max-width: 540px;
+  margin-bottom: 40px; font-weight: 300; animation: fadeUp 0.7s 0.26s ease both;
+}
+.hero-body strong { font-weight: 600; color: var(--ink); }
+.hero-ctas {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 56px;
+  animation: fadeUp 0.7s 0.34s ease both; flex-wrap: wrap;
+}
+.btn-hero-primary {
+  font-size: 15px; padding: 13px 28px; background: var(--ink); color: var(--accent);
+  border-radius: 5px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.btn-hero-primary:hover { background: var(--ink-mid); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(17,18,16,0.18); }
+.btn-hero-secondary {
+  font-size: 15px; padding: 13px 28px; background: transparent; color: var(--ink);
+  border: 1.5px solid rgba(17,18,16,0.2); border-radius: 5px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+}
+.btn-hero-secondary:hover { border-color: var(--ink); background: var(--bg-warm); }
+.trust-strip {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  animation: fadeUp 0.7s 0.42s ease both;
+}
+.trust-label { font-family: var(--font-mono); font-size: 11px; color: var(--ink-ghost); letter-spacing: 0.06em; white-space: nowrap; }
+.trust-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.trust-tag {
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-mid);
+  background: var(--bg-warm); border: 1px solid var(--rule);
+  padding: 4px 10px; border-radius: 3px; letter-spacing: 0.04em;
+}
+.hero-right { position: relative; z-index: 2; padding-bottom: 4px; animation: fadeUp 0.7s 0.4s ease both; }
+.hero-stat-card {
+  background: var(--ink); border-radius: 12px; padding: 32px 28px;
+  position: relative; overflow: hidden;
+}
+.hero-stat-card::before {
+  content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 200px;
+  background: radial-gradient(circle at top right, rgba(212,242,68,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hsc-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 20px; }
+.hsc-row { padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 4px; }
+.hsc-row:last-of-type { border-bottom: none; }
+.hsc-num { font-family: var(--font-display); font-size: 38px; font-weight: 700; letter-spacing: -2px; line-height: 1; color: var(--accent); }
+.hsc-desc { font-size: 12px; line-height: 1.55; color: rgba(255,255,255,0.5); font-weight: 300; }
+
+/* ═══════════════════════════════════════
+   PROBLEM
+═══════════════════════════════════════ */
+.problem-section { background: var(--bg-dark); padding: 120px 0; position: relative; overflow: hidden; }
+.problem-section::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+.problem-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); display: grid; grid-template-columns: 400px 1fr; gap: 80px; align-items: start; }
+.problem-left { position: sticky; top: 100px; }
+.problem-tag { color: rgba(255,255,255,0.3); margin-bottom: 24px; }
+.problem-tag::before { background: rgba(255,255,255,0.15); }
+.problem-heading { font-family: var(--font-display); font-size: clamp(34px, 4vw, 52px); font-weight: 700; line-height: 1.08; letter-spacing: -1.5px; color: #fff; margin-bottom: 20px; }
+.problem-intro { font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.45); font-weight: 300; }
+.stat-cards { display: flex; flex-direction: column; gap: 2px; margin-bottom: 40px; }
+.stat-card {
+  background: var(--bg-dark2); border: 1px solid var(--rule-dark); border-radius: 8px;
+  padding: 28px 32px; display: grid; grid-template-columns: 100px 1fr; gap: 24px; align-items: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.stat-card:hover { border-color: rgba(212,242,68,0.2); background: rgba(212,242,68,0.02); }
+.stat-card-num { font-family: var(--font-display); font-size: clamp(30px, 3.5vw, 44px); font-weight: 700; letter-spacing: -2px; line-height: 1; color: var(--accent); }
+.stat-card-headline { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 4px; line-height: 1.4; }
+.stat-card-source { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.06em; }
+.problem-prose {
+  font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.45); font-weight: 300;
+  padding: 28px 32px; border-left: 2px solid rgba(212,242,68,0.3);
+  background: rgba(212,242,68,0.03); border-radius: 0 8px 8px 0;
+}
+.problem-prose strong { color: rgba(255,255,255,0.8); font-weight: 500; }
+
+/* ═══════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════ */
+.how-section { background: var(--bg); padding: 120px 0; border-top: 1px solid var(--rule); }
+.how-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+.how-header { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: end; margin-bottom: 80px; }
+.how-title { font-family: var(--font-display); font-size: clamp(38px, 5vw, 64px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; color: var(--ink); }
+.how-title em { font-style: italic; font-weight: 400; }
+.how-desc { font-size: 16px; line-height: 1.75; color: var(--ink-mid); font-weight: 300; padding-top: 8px; }
+.how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.how-step { background: var(--bg); padding: 48px 36px; transition: background 0.2s; }
+.how-step:hover { background: var(--bg-warm); }
+.how-step-num { font-family: var(--font-display); font-size: 80px; font-weight: 900; font-style: italic; color: var(--rule); line-height: 1; margin-bottom: 20px; transition: color 0.2s; }
+.how-step:hover .how-step-num { color: rgba(17,18,16,0.08); }
+.how-step-title { font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 12px; letter-spacing: -0.3px; }
+.how-step-desc { font-size: 14px; line-height: 1.7; color: var(--ink-soft); font-weight: 300; }
+.how-step-ex { margin-top: 20px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-mid); background: var(--bg-warm); border: 1px solid var(--rule); padding: 10px 14px; border-radius: 6px; line-height: 1.5; font-style: italic; }
+
+/* ═══════════════════════════════════════
+   FEATURES
+═══════════════════════════════════════ */
+.features-section { background: var(--bg-warm); padding: 120px 0; border-top: 1px solid var(--rule); }
+.features-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+.features-header { margin-bottom: 64px; }
+.features-title { font-family: var(--font-display); font-size: clamp(36px, 4.5vw, 60px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; color: var(--ink); margin-top: 16px; }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--rule); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.feat { background: var(--bg-warm); padding: 36px 30px; transition: background 0.2s; }
+.feat:hover { background: var(--bg); }
+.feat-icon { width: 40px; height: 40px; background: var(--ink); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+.feat-icon svg { width: 18px; height: 18px; fill: var(--accent); }
+.feat-name { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; margin-bottom: 10px; }
+.feat-desc { font-size: 14px; line-height: 1.7; color: var(--ink-soft); font-weight: 300; }
+
+/* ═══════════════════════════════════════
+   PRICING
+═══════════════════════════════════════ */
+.pricing-section { background: var(--bg); padding: 120px 0; border-top: 1px solid var(--rule); }
+.pricing-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+.pricing-header { margin-bottom: 56px; }
+.pricing-title { font-family: var(--font-display); font-size: clamp(36px, 4.5vw, 60px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; color: var(--ink); margin-top: 16px; }
+.pricing-title em { font-style: italic; font-weight: 400; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pricing-card { background: var(--bg); border: 1.5px solid var(--rule); border-radius: 12px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+.pricing-card:hover { border-color: rgba(17,18,16,0.2); box-shadow: 0 8px 32px rgba(17,18,16,0.06); }
+.pricing-card.featured { border-color: var(--ink); background: var(--ink); }
+.pricing-card-top { padding: 32px 28px 24px; border-bottom: 1.5px solid var(--rule); }
+.pricing-card.featured .pricing-card-top { border-color: rgba(255,255,255,0.08); }
+.pc-tier { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 16px; }
+.pricing-card.featured .pc-tier { color: rgba(255,255,255,0.4); }
+.pc-price { font-family: var(--font-display); font-size: 52px; font-weight: 900; letter-spacing: -3px; line-height: 1; color: var(--ink); margin-bottom: 4px; }
+.pricing-card.featured .pc-price { color: var(--accent); }
+.pc-price sup { font-size: 22px; letter-spacing: -1px; vertical-align: super; }
+.pc-period { font-family: var(--font-mono); font-size: 11px; color: var(--ink-ghost); letter-spacing: 0.04em; margin-bottom: 14px; }
+.pricing-card.featured .pc-period { color: rgba(255,255,255,0.3); }
+.pc-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; font-weight: 300; }
+.pricing-card.featured .pc-desc { color: rgba(255,255,255,0.5); }
+.pricing-card-body { padding: 24px 28px; flex: 1; }
+.pc-feat { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--ink-mid); margin-bottom: 11px; line-height: 1.45; font-weight: 400; }
+.pricing-card.featured .pc-feat { color: rgba(255,255,255,0.65); }
+.pc-feat::before { content: '✓'; font-family: var(--font-mono); font-size: 12px; color: var(--accent-dim); flex-shrink: 0; margin-top: 1px; font-weight: 500; }
+.pricing-card.featured .pc-feat::before { color: var(--accent); }
+.pricing-card-foot { padding: 0 28px 28px; }
+.btn-pricing { display: flex; align-items: center; justify-content: center; width: 100%; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 13px; border-radius: 6px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; }
+.btn-pricing-free { border: 1.5px solid var(--rule); color: var(--ink); background: transparent; }
+.btn-pricing-free:hover { border-color: var(--ink); background: var(--bg-warm); }
+.btn-pricing-pro { background: var(--accent); color: var(--ink); }
+.btn-pricing-pro:hover { background: #ddf85a; box-shadow: 0 4px 20px rgba(212,242,68,0.4); transform: translateY(-1px); }
+.btn-pricing-ent { border: 1.5px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); background: transparent; }
+.btn-pricing-ent:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ═══════════════════════════════════════
+   INTEGRATIONS
+═══════════════════════════════════════ */
+.integrations-section { background: var(--bg-dark); padding: 120px 0; }
+.integrations-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+.int-header { margin-bottom: 56px; }
+.int-title { font-family: var(--font-display); font-size: clamp(36px, 4.5vw, 60px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; color: #fff; margin-top: 16px; }
+.int-title em { font-style: italic; font-weight: 400; color: rgba(255,255,255,0.45); }
+.int-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule-dark); border: 1px solid var(--rule-dark); border-radius: 12px; overflow: hidden; }
+.int-card { background: var(--bg-dark2); padding: 28px 24px; transition: background 0.2s; }
+.int-card:hover { background: rgba(255,255,255,0.03); }
+.int-card-name { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 8px; letter-spacing: -0.2px; }
+.int-card-desc { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.6; font-weight: 300; }
+
+/* ═══════════════════════════════════════
+   SLA
+═══════════════════════════════════════ */
+.sla-section { background: var(--bg-warm); border-top: 1px solid var(--rule); padding: 100px 0; }
+.sla-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); max-width: 800px; }
+.sla-title { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 44px); font-weight: 700; letter-spacing: -1.5px; color: var(--ink); margin-top: 16px; margin-bottom: 40px; }
+.sla-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.sla-block h4 { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 12px; letter-spacing: -0.2px; }
+.sla-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.sla-block li { font-size: 13px; color: var(--ink-soft); line-height: 1.5; font-weight: 300; padding-left: 16px; position: relative; }
+.sla-block li::before { content: '—'; position: absolute; left: 0; color: var(--ink-ghost); font-size: 11px; }
+.sla-block li strong { color: var(--ink); font-weight: 500; }
+.sla-note { margin-top: 32px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-ghost); letter-spacing: 0.06em; }
+
+/* ═══════════════════════════════════════
+   FINAL CTA
+═══════════════════════════════════════ */
+.cta-section { background: var(--bg-dark); border-top: 1px solid var(--rule-dark); }
+.cta-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+.cta-headline-block { padding: 100px 0 60px; border-bottom: 1px solid var(--rule-dark); }
+.cta-overline { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 28px; display: flex; align-items: center; gap: 12px; }
+.cta-overline::before { content: ''; display: block; width: 20px; height: 1px; background: rgba(255,255,255,0.15); }
+.cta-headline { font-family: var(--font-display); font-size: clamp(42px, 6vw, 88px); font-weight: 900; letter-spacing: -3.5px; line-height: 0.95; color: #fff; margin-bottom: 28px; }
+.cta-headline em { font-style: italic; font-weight: 400; color: var(--accent); }
+.cta-sub { font-size: 17px; line-height: 1.75; color: rgba(255,255,255,0.45); max-width: 580px; font-weight: 300; margin-bottom: 44px; }
+.cta-sub strong { color: rgba(255,255,255,0.75); font-weight: 500; }
+.cta-buttons { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.btn-cta-primary { font-size: 15px; padding: 14px 30px; background: var(--accent); color: var(--ink); border-radius: 5px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: var(--font-body); }
+.btn-cta-primary:hover { background: #ddf85a; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,242,68,0.3); }
+.btn-cta-secondary { font-size: 15px; padding: 14px 30px; border: 1.5px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border-radius: 5px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: var(--font-body); }
+.btn-cta-secondary:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+.btn-cta-ghost { font-size: 15px; padding: 14px 20px; color: rgba(255,255,255,0.35); font-weight: 400; display: inline-flex; align-items: center; gap: 8px; transition: color 0.2s; font-family: var(--font-body); }
+.btn-cta-ghost:hover { color: rgba(255,255,255,0.7); }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  background: var(--bg-dark2); border-top: 1px solid var(--rule-dark);
+  padding: 36px var(--pad);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+}
+.footer-logo img { height: 36px; width: auto; opacity: 0.75; transition: opacity 0.2s; }
+.footer-logo:hover img { opacity: 1; }
+.footer-links { display: flex; gap: 20px; list-style: none; flex-wrap: wrap; }
+.footer-links a { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 0.06em; transition: color 0.2s; }
+.footer-links a:hover { color: rgba(255,255,255,0.6); }
+.footer-chips { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.footer-chip { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 3px; letter-spacing: 0.06em; }
+.footer-copy { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.18); letter-spacing: 0.06em; }
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes navIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 4px rgba(212,242,68,0.25); } 50% { box-shadow: 0 0 0 8px rgba(212,242,68,0.08); } }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .problem-inner { grid-template-columns: 1fr; }
+  .problem-left { position: static; }
+  .how-header { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+  .int-grid { grid-template-columns: repeat(2, 1fr); }
+  .sla-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  :root { --pad: 20px; }
+  .nav-links { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .int-grid { grid-template-columns: 1fr; }
+  .stat-card { grid-template-columns: 1fr; gap: 8px; }
+  .cta-headline { letter-spacing: -2px; }
+}
+</style>
 </head>
 <body>
 
+<!-- ══ NAV ══ -->
 <nav>
-  <a href="#" class="nav-logo"><img src="/logo.svg" alt="LivingDocs" height="52" style="display:block;" /></a>
-  <ul class="nav-links">
-    <li><a href="#tools">Tools</a></li>
-    <li><a href="#install">Install</a></li>
-    <li><a href="#integrations">Integrations</a></li>
-    <li><a href="#pro">Pro</a></li>
-    <li><a href="https://www.producthunt.com/posts/livingdocs" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#ff6154;color:#fff;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">🐱 Product Hunt</a></li>
-    <li><a href="https://github.com/dinesh-mys/livingdocs" class="nav-cta" target="_blank">GitHub →</a></li>
-  </ul>
+  <a href="#" class="nav-logo">
+    <img src="/logo.svg" alt="LivingDocs" />
+  </a>
+  <div class="nav-links">
+    <a href="#problem" class="nav-a">The Problem</a>
+    <a href="#how" class="nav-a">How It Works</a>
+    <a href="#features" class="nav-a">Features</a>
+    <a href="#pricing" class="nav-a">Pricing</a>
+    <a href="#integrations" class="nav-a">Integrations</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://www.producthunt.com/posts/livingdocs" target="_blank" class="btn-ph">🐱 Product Hunt</a>
+    <a href="https://github.com/dinesh-mys/livingdocs" class="btn btn-outline" target="_blank">GitHub</a>
+    <a href="https://www.nuget.org/packages/LivingDocs.Mcp" class="btn btn-solid" target="_blank">Start Free →</a>
+  </div>
 </nav>
 
+<!-- ══ HERO ══ -->
 <section class="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-glow"></div>
-
-  <div class="badge">MCP Server · Claude Desktop · Claude Code · GitHub Copilot · Slack · Teams · Email</div>
-
-  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--accent);margin-bottom:20px;animation:fadeUp 0.6s ease 0.05s both;">
-    <span style="font-size:16px;">⭐</span>
-    <span><strong>600+</strong> developers installed</span>
-  </div>
-
-  <h1>Docs that<br/><em>never go stale</em></h1>
-
-  <p class="hero-sub">
-    AI-powered documentation health monitor. Detects stale comments, finds knowledge gaps, flags departure risk, and makes your Slack, Teams, and email searchable — all via Claude.
-  </p>
-
-  <div class="hero-actions">
-    <a href="#install" class="btn-primary">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M8 9l3 3-3 3m5 0h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-      Get Started
-    </a>
-    <a href="https://github.com/dinesh-mys/livingdocs" target="_blank" class="btn-secondary">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.66-.22.66-.48v-1.7C6.73 19.91 6.14 18 6.14 18c-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 7.4c.85.004 1.71.115 2.51.337 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85v2.74c0 .27.16.58.67.48A10.01 10.01 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
-      View on GitHub
-    </a>
-  </div>
-
-  <div class="shields">
-    <a href="https://www.nuget.org/packages/LivingDocs.Mcp" class="shield" target="_blank">
-      <span class="shield-l">NuGet</span><span class="shield-r">LivingDocs.Mcp</span>
-    </a>
-    <a href="https://github.com/dinesh-mys/livingdocs/issues" class="shield" target="_blank">
-      <span class="shield-l">issues</span><span class="shield-r gray">open</span>
-    </a>
-    <a href="https://github.com/dinesh-mys/livingdocs" class="shield" target="_blank">
-      <span class="shield-l">license</span><span class="shield-r blue">MIT</span>
-    </a>
-  </div>
-
-  <div class="terminal-wrap">
-    <div class="terminal">
-      <div class="terminal-bar">
-        <span class="dot dot-r"></span>
-        <span class="dot dot-y"></span>
-        <span class="dot dot-g"></span>
-        <span class="terminal-title">livingdocs-mcp — bash</span>
+  <div class="hero-bg-word">Memory</div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-kicker">
+        <span class="hero-kicker-dot"></span>
+        Institutional memory for engineering teams
       </div>
-      <div class="terminal-body">
-        <div><span class="t-prompt">$ </span><span class="t-cmd">livingdocs-mcp scan /path/to/your/repo</span></div>
-        <div>&nbsp;</div>
-        <div><span class="t-comment">Scanning /path/to/repo ...</span></div>
-        <div><span class="t-key">Files examined</span> <span class="t-comment">:</span> <span class="t-val">48</span>  <span class="t-key">Stale docs</span><span class="t-comment">:</span> <span class="t-warn">3</span>  <span class="t-key">Gaps</span><span class="t-comment">:</span> <span class="t-bar-full">7</span></div>
-        <div>&nbsp;</div>
-        <div><span class="t-bar-full">[██████████]</span><span class="t-warn">  100%</span><span class="t-cmd">  src/Tax.cs</span></div>
-        <div class="t-indent"><span class="t-comment">doc updated : 2024-09-01 · code changed: 2025-01-15</span></div>
-        <div>&nbsp;</div>
-        <div><span class="t-comment">Knowledge gaps (undocumented, ranked by activity):</span></div>
-        <div><span class="t-warn">  1.</span><span class="t-cmd">  src/PaymentService.cs </span><span class="t-comment">· 47 commits · last: Alice Chen</span></div>
-        <div><span class="t-warn">  2.</span><span class="t-cmd">  src/AuthMiddleware.cs </span><span class="t-comment">· 31 commits · last: Bob Smith</span></div>
-        <div>&nbsp;</div>
-        <div><span class="t-comment">Departure risk:</span></div>
-        <div><span class="t-bar-full">  ⚠</span><span class="t-cmd">  src/PaymentService.cs</span><span class="t-comment"> — Alice owns 78% of commits</span></div>
+      <h1 class="hero-title">
+        Your team's<br/>knowledge lives<br/><em>everywhere.</em>
+      </h1>
+      <p class="hero-body">
+        Code comments. Slack threads. Old emails. Confluence pages nobody reads.<br/>
+        <strong>LivingDocs connects every source of institutional knowledge into one searchable layer — powered by Claude.</strong> Your engineers stop guessing and start shipping.
+      </p>
+      <div class="hero-ctas">
+        <a href="https://www.nuget.org/packages/LivingDocs.Mcp" class="btn-hero-primary" target="_blank">
+          Start Free
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="mailto:dinesh@novaders.com?subject=LivingDocs Demo" class="btn-hero-secondary">Book a Demo</a>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="tools-section" id="tools">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">// tools</span>
-      <h2 class="section-title">Everything you need<br/>to keep docs healthy</h2>
-      <p class="section-desc">Five free tools, six powerful Pro capabilities. Plug into your workflow via MCP.</p>
-    </div>
-    <div class="tools-grid reveal">
-      <div class="tool-card">
-        <span class="tool-tier tier-free">Free</span>
-        <div class="tool-name"><code>scan_repo</code></div>
-        <p class="tool-desc">Scan a repo and list stale doc files with staleness percentage from 0–100%. Know exactly where rot lives.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-free">Free</span>
-        <div class="tool-name"><code>query_docs</code></div>
-        <p class="tool-desc">Answer natural-language questions about your codebase using its doc comments — plus any indexed Slack, Teams, or email.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-free">Free</span>
-        <div class="tool-name"><code>suggest_doc_update</code></div>
-        <p class="tool-desc">Ask Claude to rewrite a stale doc comment with an updated, accurate description based on the current code.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-free">Free</span>
-        <div class="tool-name"><code>detect_gaps</code></div>
-        <p class="tool-desc">Find source files with no documentation at all, ranked by git commit frequency. Prioritise what matters most to document first.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-free">Free</span>
-        <div class="tool-name"><code>departure_risk</code></div>
-        <p class="tool-desc">Bus factor analysis. Flags files where one author owns ≥60% of commits — before that person leaves the team.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-pro">Pro</span>
-        <div class="tool-name"><code>sync_confluence</code></div>
-        <p class="tool-desc">Write updated docs back to Confluence pages automatically. Creates pages if they don't exist.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-pro">Pro</span>
-        <div class="tool-name"><code>scan_org</code></div>
-        <p class="tool-desc">Scan all repos in a GitHub org and return an org-wide staleness report. Track documentation health at scale.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-pro">Pro</span>
-        <div class="tool-name"><code>write_docs</code></div>
-        <p class="tool-desc">Write Claude-generated docs to <code>docs/&lt;File&gt;.md</code> with a UTC timestamp on every run. Builds a full audit trail of doc history inside your repo.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-pro">Pro</span>
-        <div class="tool-name"><code>index_slack</code></div>
-        <p class="tool-desc">Fetch messages from a Slack channel and add them to the repo knowledge index. Threads are grouped so context is preserved.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-pro">Pro</span>
-        <div class="tool-name"><code>index_teams</code></div>
-        <p class="tool-desc">Pull messages from a Microsoft Teams channel via Graph API and make them searchable alongside code docs.</p>
-      </div>
-      <div class="tool-card">
-        <span class="tool-tier tier-pro">Pro</span>
-        <div class="tool-name"><code>index_email</code></div>
-        <p class="tool-desc">Fetch emails from any IMAP mailbox — Gmail, Outlook, or any provider. Engineering decisions in email become searchable instantly.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="how">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">// how it works</span>
-      <h2 class="section-title">From scattered to<br/>searchable in minutes</h2>
-    </div>
-    <div class="steps">
-      <div class="step reveal">
-        <div class="step-num">01</div>
-        <div class="step-title">Install &amp; connect</div>
-        <p class="step-desc">Install via dotnet tool install. Add your MCP config to Claude Desktop, Claude Code, or VS Code. Takes under 2 minutes.</p>
-      </div>
-      <div class="step reveal">
-        <div class="step-num">02</div>
-        <div class="step-title">Scan &amp; detect gaps</div>
-        <p class="step-desc">LivingDocs finds stale docs, undocumented hotspot files, and single points of knowledge — using git history as signal.</p>
-      </div>
-      <div class="step reveal">
-        <div class="step-num">03</div>
-        <div class="step-title">Claude writes the fix</div>
-        <p class="step-desc">Ask Claude to rewrite stale comments, generate docs for undocumented files, or answer questions across code, Slack, and email.</p>
-      </div>
-      <div class="step reveal">
-        <div class="step-num">04</div>
-        <div class="step-title">Connect all knowledge</div>
-        <p class="step-desc">Index Slack channels, Teams conversations, and email folders. Everything — code docs, chat, email — becomes one searchable knowledge base.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="install-section" id="install">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">// install</span>
-      <h2 class="section-title">Up and running<br/>in minutes</h2>
-      <p class="section-desc">Requires .NET 10 SDK. Install globally via NuGet, then configure once for your tools.</p>
-    </div>
-    <div class="install-block reveal">
-      <div class="install-tabs">
-        <div class="tab active" data-tab="global">Global Install</div>
-        <div class="tab" data-tab="claude-desktop">Claude Desktop</div>
-        <div class="tab" data-tab="claude-code">Claude Code</div>
-        <div class="tab" data-tab="copilot">VS Copilot</div>
-      </div>
-      <div class="tab-content active" id="tab-global">
-        <div class="code-block">
-          <div><span class="t-comment"># Install globally via NuGet</span></div>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">dotnet tool install -g LivingDocs.Mcp</span></div>
-          <div>&nbsp;</div>
-          <div><span class="t-comment"># Quick scan test</span></div>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">livingdocs-mcp scan /path/to/your/repo</span></div>
+      <div class="trust-strip">
+        <span class="trust-label">Works with</span>
+        <div class="trust-tags">
+          <span class="trust-tag">GitHub</span>
+          <span class="trust-tag">Slack</span>
+          <span class="trust-tag">Microsoft Teams</span>
+          <span class="trust-tag">Confluence</span>
+          <span class="trust-tag">Email</span>
+          <span class="trust-tag">Claude</span>
         </div>
       </div>
-      <div class="tab-content" id="tab-claude-desktop">
-        <div class="code-block">
-          <div><span class="t-comment"># ~/Library/Application Support/Claude/claude_desktop_config.json</span></div>
-          <div><span class="t-val">{</span></div>
-          <div class="t-indent"><span class="t-key">"mcpServers"</span><span class="t-comment">: {</span></div>
-          <div class="t-indent t-indent"><span class="t-key">"livingdocs"</span><span class="t-comment">: {</span></div>
-          <div class="t-indent t-indent t-indent"><span class="t-key">"command"</span><span class="t-comment">: </span><span class="t-ok">"livingdocs-mcp"</span><span class="t-comment">,</span></div>
-          <div class="t-indent t-indent t-indent"><span class="t-key">"env"</span><span class="t-comment">: { </span><span class="t-key">"ANTHROPIC_API_KEY"</span><span class="t-comment">: </span><span class="t-ok">"sk-ant-..."</span><span class="t-comment"> }</span></div>
-          <div class="t-indent t-indent"><span class="t-comment">}</span></div>
-          <div class="t-indent"><span class="t-comment">}</span></div>
-          <div><span class="t-val">}</span></div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat-card">
+        <div class="hsc-label">The cost of knowledge loss</div>
+        <div class="hsc-row">
+          <div class="hsc-num">42%</div>
+          <div class="hsc-desc">of enterprise knowledge never gets written down — it lives in people's heads</div>
         </div>
-      </div>
-      <div class="tab-content" id="tab-claude-code">
-        <div class="code-block">
-          <div><span class="t-comment"># Register globally:</span></div>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">claude mcp add livingdocs -s user -- livingdocs-mcp</span></div>
-          <div>&nbsp;</div>
-          <div><span class="t-comment"># Then chat naturally:</span></div>
-          <div><span class="t-ok">scan this repo for stale docs</span></div>
-          <div><span class="t-ok">what does the Auth module do?</span></div>
-          <div><span class="t-ok">suggest a fix for src/Tax.cs</span></div>
+        <div class="hsc-row">
+          <div class="hsc-num">$47M</div>
+          <div class="hsc-desc">average annual cost of poor knowledge management per large enterprise</div>
         </div>
-      </div>
-      <div class="tab-content" id="tab-copilot">
-        <div class="code-block">
-          <div><span class="t-comment"># Add .vscode/mcp.json to your project (VS Code 1.99+)</span></div>
-          <div><span class="t-val">{</span></div>
-          <div class="t-indent"><span class="t-key">"servers"</span><span class="t-comment">: {</span></div>
-          <div class="t-indent t-indent"><span class="t-key">"livingdocs"</span><span class="t-comment">: {</span></div>
-          <div class="t-indent t-indent t-indent"><span class="t-key">"type"</span><span class="t-comment">: </span><span class="t-ok">"stdio"</span><span class="t-comment">,</span></div>
-          <div class="t-indent t-indent t-indent"><span class="t-key">"command"</span><span class="t-comment">: </span><span class="t-ok">"livingdocs-mcp"</span></div>
-          <div class="t-indent t-indent"><span class="t-comment">}</span></div>
-          <div class="t-indent"><span class="t-comment">}</span></div>
-          <div><span class="t-val">}</span></div>
-          <div>&nbsp;</div>
-          <div><span class="t-comment"># Open Copilot chat → switch to Agent mode → tools available</span></div>
+        <div class="hsc-row">
+          <div class="hsc-num">12h</div>
+          <div class="hsc-desc">per week employees spend searching for information they can't find</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ══ PROBLEM ══ -->
+<section class="problem-section" id="problem">
+  <div class="problem-inner">
+    <div class="problem-left reveal">
+      <div class="tag-label problem-tag">The problem</div>
+      <h2 class="problem-heading">Knowledge loss is costing your team every day</h2>
+      <p class="problem-intro">The numbers are uncomfortable. Here's what the research says about what your team is quietly losing.</p>
+    </div>
+    <div class="problem-right">
+      <div class="stat-cards reveal">
+        <div class="stat-card">
+          <div class="stat-card-num">42%</div>
+          <div class="stat-card-body">
+            <div class="stat-card-headline">of enterprise knowledge is never written down — it lives in people's heads</div>
+            <div class="stat-card-source">Panopto, 2019</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num">$47M</div>
+          <div class="stat-card-body">
+            <div class="stat-card-headline">average annual cost of poor knowledge management for large enterprises</div>
+            <div class="stat-card-source">IDC</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num">12h</div>
+          <div class="stat-card-body">
+            <div class="stat-card-headline">per week employees spend searching for information they can't find</div>
+            <div class="stat-card-source">McKinsey Global Institute</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num">9mo</div>
+          <div class="stat-card-body">
+            <div class="stat-card-headline">6–9 months salary — cost of replacing a senior engineer who takes knowledge with them</div>
+            <div class="stat-card-source">SHRM</div>
+          </div>
+        </div>
+      </div>
+      <div class="problem-prose reveal">
+        Every time a senior engineer leaves, an incident happens at 2am, or a new hire joins — your team is <strong>searching across Slack, Confluence, GitHub, and email</strong> trying to piece together context that should take seconds to find.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="how-section" id="how">
+  <div class="how-inner">
+    <div class="how-header reveal">
+      <div>
+        <div class="tag-label" style="margin-bottom:16px">How it works</div>
+        <h2 class="how-title">One question.<br/><em>Every answer.</em></h2>
+      </div>
+      <p class="how-desc">LivingDocs indexes your code documentation, Slack channels, Microsoft Teams conversations, and email threads into a single knowledge base. Powered by Claude, it understands context — not just keywords.</p>
+    </div>
+    <div class="how-steps reveal">
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div class="how-step-title">Connect your sources</div>
+        <p class="how-step-desc">GitHub, Slack, Teams, email, Confluence — connected in minutes, not weeks. No new infrastructure required.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div class="how-step-title">Everything gets indexed</div>
+        <p class="how-step-desc">Code comments, architectural decisions, incident threads, onboarding emails — all searchable from one place.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">03</div>
+        <div class="how-step-title">Ask Claude anything</div>
+        <p class="how-step-desc">Claude answers from your actual team's conversations and code — not generic training data.</p>
+        <div class="how-step-ex">"Why does the payment service use async processing?"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="features-section" id="features">
+  <div class="features-inner">
+    <div class="features-header reveal">
+      <div class="tag-label" style="margin-bottom:16px">Features</div>
+      <h2 class="features-title">Built for engineering<br/>teams at scale</h2>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feat">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="feat-name">Stale doc detection</div>
+        <p class="feat-desc">Know exactly which documentation hasn't kept up with the code. Staleness scored 0–100% per file.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="feat-name">Knowledge gap analysis</div>
+        <p class="feat-desc">Find source files with zero documentation, ranked by git commit frequency. Prioritise what matters most.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="feat-name">Departure risk alerts</div>
+        <p class="feat-desc">Bus factor analysis across your entire codebase. Alerted when one engineer owns 60%+ of a critical file — before they hand in their notice.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="feat-name">Slack &amp; Teams connector</div>
+        <p class="feat-desc">That architectural decision made in a Slack thread 18 months ago? Indexed, searchable, retrievable in seconds.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="feat-name">Email connector</div>
+        <p class="feat-desc">Engineering decisions buried in email chains become part of your knowledge base automatically. Gmail, Outlook, any IMAP provider.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="feat-name">Confluence sync</div>
+        <p class="feat-desc">Updated docs written back to Confluence automatically. No copy-paste. No drift. Pages created if they don't exist.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="pricing-header reveal">
+      <div class="tag-label" style="margin-bottom:16px">Pricing</div>
+      <h2 class="pricing-title">Start free. Scale<br/>when you're <em>ready.</em></h2>
+    </div>
+    <div class="pricing-grid reveal">
+
+      <!-- FREE -->
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <div class="pc-tier">Free</div>
+          <div class="pc-price">$0</div>
+          <div class="pc-period">forever</div>
+          <p class="pc-desc">For individual developers</p>
+        </div>
+        <div class="pricing-card-body">
+          <div class="pc-feat">Scan repo for stale docs</div>
+          <div class="pc-feat">Natural language queries</div>
+          <div class="pc-feat">Claude-powered suggestions</div>
+          <div class="pc-feat">Detect knowledge gaps</div>
+          <div class="pc-feat">Departure risk alerts</div>
+          <div class="pc-feat">C#, TypeScript, JS, Python, Go</div>
+        </div>
+        <div class="pricing-card-foot">
+          <a href="https://www.nuget.org/packages/LivingDocs.Mcp" target="_blank" class="btn-pricing btn-pricing-free">Install Free →</a>
+        </div>
+      </div>
+
+      <!-- PRO -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-top">
+          <div class="pc-tier">Pro</div>
+          <div class="pc-price"><sup>$</sup>10</div>
+          <div class="pc-period">per month · 7-day free trial</div>
+          <p class="pc-desc">For teams</p>
+        </div>
+        <div class="pricing-card-body">
+          <div class="pc-feat">Everything in Free</div>
+          <div class="pc-feat">Slack &amp; Teams connector</div>
+          <div class="pc-feat">Email / IMAP connector</div>
+          <div class="pc-feat">Confluence sync</div>
+          <div class="pc-feat">Org-wide scanning</div>
+          <div class="pc-feat">Write docs to repo automatically</div>
+        </div>
+        <div class="pricing-card-foot">
+          <a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank" class="btn-pricing btn-pricing-pro">Start 7-Day Free Trial →</a>
+        </div>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="pricing-card" style="background:var(--bg-dark);border-color:var(--rule-dark)">
+        <div class="pricing-card-top" style="border-color:var(--rule-dark)">
+          <div class="pc-tier" style="color:rgba(255,255,255,0.3)">Enterprise</div>
+          <div class="pc-price" style="color:#fff;font-size:36px;letter-spacing:-2px">Custom</div>
+          <div class="pc-period" style="color:rgba(255,255,255,0.25)">annual or one-time</div>
+          <p class="pc-desc" style="color:rgba(255,255,255,0.4)">For large organisations</p>
+        </div>
+        <div class="pricing-card-body">
+          <div class="pc-feat" style="color:rgba(255,255,255,0.5)">Everything in Pro</div>
+          <div class="pc-feat" style="color:rgba(255,255,255,0.5)">Offline / air-gapped deployment</div>
+          <div class="pc-feat" style="color:rgba(255,255,255,0.5)">Azure OpenAI / on-prem LLM</div>
+          <div class="pc-feat" style="color:rgba(255,255,255,0.5)">Self-contained binary</div>
+          <div class="pc-feat" style="color:rgba(255,255,255,0.5)">Priority support &amp; SLA</div>
+          <div class="pc-feat" style="color:rgba(255,255,255,0.5)">Custom invoicing</div>
+        </div>
+        <div class="pricing-card-foot">
+          <a href="mailto:dinesh@novaders.com?subject=LivingDocs Enterprise" class="btn-pricing btn-pricing-ent">Contact Us →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ INTEGRATIONS ══ -->
 <section class="integrations-section" id="integrations">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">// integrations</span>
-      <h2 class="section-title">Works where<br/>you already work</h2>
+  <div class="integrations-inner">
+    <div class="int-header reveal">
+      <div class="tag-label" style="color:rgba(255,255,255,0.25);margin-bottom:16px">Integrations</div>
+      <h2 class="int-title">Works where your<br/>team <em>already works</em></h2>
     </div>
-    <div class="integrations-grid reveal">
-      <div class="integration-card">
-        <div class="integration-icon">🤖</div>
-        <div class="integration-name">Claude Desktop</div>
-        <p class="integration-desc">Add livingdocs as an MCP server. Scan, query, and update docs from the Claude chat interface.</p>
+    <div class="int-grid reveal">
+      <div class="int-card">
+        <div class="int-card-name">Claude</div>
+        <p class="int-card-desc">AI engine for all queries and suggestions. Context-aware, not keyword-based.</p>
       </div>
-      <div class="integration-card">
-        <div class="integration-icon">⌨️</div>
-        <div class="integration-name">Claude Code</div>
-        <p class="integration-desc">Register globally or per-project. LivingDocs tools appear in your Claude Code chat context.</p>
+      <div class="int-card">
+        <div class="int-card-name">GitHub</div>
+        <p class="int-card-desc">Source of truth for code and git history. Commit frequency drives gap prioritisation.</p>
       </div>
-      <div class="integration-card">
-        <div class="integration-icon">🛠️</div>
-        <div class="integration-name">GitHub Copilot</div>
-        <p class="integration-desc">VS Code 1.99+ agent mode support. Drop in a .vscode/mcp.json and all tools are available.</p>
+      <div class="int-card">
+        <div class="int-card-name">Slack</div>
+        <p class="int-card-desc">Index channel conversations and decisions. Threads grouped so context is preserved.</p>
       </div>
-      <div class="integration-card">
-        <div class="integration-icon">📄</div>
-        <div class="integration-name">Confluence <span style="color:var(--amber);font-size:11px;">Pro</span></div>
-        <p class="integration-desc">Automatically sync updated docs to Confluence pages. Creates pages that don't yet exist.</p>
+      <div class="int-card">
+        <div class="int-card-name">Microsoft Teams</div>
+        <p class="int-card-desc">Graph API integration, no bot needed. Requires Azure AD with ChannelMessage.Read.All.</p>
       </div>
-      <div class="integration-card">
-        <div class="integration-icon">🗂️</div>
-        <div class="integration-name">Git Repo <span style="color:var(--amber);font-size:11px;">Pro</span></div>
-        <p class="integration-desc">Write Claude-generated docs to <code>docs/&lt;File&gt;.md</code> inside your repo. Timestamped on every run — no external tools needed.</p>
+      <div class="int-card">
+        <div class="int-card-name">Email / IMAP</div>
+        <p class="int-card-desc">Gmail, Outlook, any provider. Engineering decisions buried in email, made searchable.</p>
       </div>
-      <div class="integration-card">
-        <div class="integration-icon" style="font-size:16px;">💬</div>
-        <div class="integration-name">Slack <span style="color:var(--amber);font-size:11px;">Pro</span></div>
-        <p class="integration-desc">Index channel messages into the repo knowledge base. Threads grouped by context. Requires <code style="font-size:11px;">SLACK_BOT_TOKEN</code>.</p>
+      <div class="int-card">
+        <div class="int-card-name">Confluence</div>
+        <p class="int-card-desc">Read and write back automatically. No copy-paste. Pages created if they don't exist.</p>
       </div>
-      <div class="integration-card">
-        <div class="integration-icon" style="font-size:16px;">🟦</div>
-        <div class="integration-name">Microsoft Teams <span style="color:var(--amber);font-size:11px;">Pro</span></div>
-        <p class="integration-desc">Pull channel messages via Microsoft Graph API. Requires Azure AD app with ChannelMessage.Read.All.</p>
+      <div class="int-card">
+        <div class="int-card-name">VS Code</div>
+        <p class="int-card-desc">GitHub Copilot agent mode support. Drop in a .vscode/mcp.json and all tools are available.</p>
       </div>
-      <div class="integration-card">
-        <div class="integration-icon" style="font-size:16px;">📧</div>
-        <div class="integration-name">Email / IMAP <span style="color:var(--amber);font-size:11px;">Pro</span></div>
-        <p class="integration-desc">Fetch from any IMAP mailbox — Gmail, Outlook, or self-hosted. Engineering decisions buried in email, made searchable.</p>
-      </div>
-    </div>
-    <div style="margin-top: 56px;" class="reveal">
-      <span class="section-label">// supported languages</span>
-      <h3 class="section-title" style="font-size: 28px; margin-top: 12px;">Scans across 5 languages</h3>
-      <div class="langs">
-        <div class="lang-tag">◆ C#</div>
-        <div class="lang-tag">◆ TypeScript</div>
-        <div class="lang-tag">◆ JavaScript</div>
-        <div class="lang-tag">◆ Python</div>
-        <div class="lang-tag">◆ Go</div>
+      <div class="int-card">
+        <div class="int-card-name">Claude Desktop</div>
+        <p class="int-card-desc">Full MCP server integration. Scan, query, and update docs from the Claude chat interface.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="pro-section" id="pro">
-  <div class="section-inner">
-    <span class="section-label">// pricing</span>
-    <h2 class="pro-title" style="margin-bottom:8px;">Simple, transparent <em>pricing</em></h2>
-    <p style="color:var(--muted);font-size:14px;margin-bottom:48px;">Start free. Upgrade when you need more.</p>
-
-    <div class="pricing-grid">
-
-      <!-- Free -->
-      <div class="pricing-card reveal">
-        <span class="pricing-badge badge-free">Free</span>
-        <div class="pricing-price free">$0</div>
-        <div class="pricing-period">forever</div>
-        <p class="pricing-desc">For individual developers who want to keep their docs healthy.</p>
-        <div class="pricing-feats">
-          <div class="pricing-feat feat-free">Scan repo for stale docs</div>
-          <div class="pricing-feat feat-free">Query docs with natural language</div>
-          <div class="pricing-feat feat-free">Claude-powered doc suggestions</div>
-          <div class="pricing-feat feat-free">C#, TypeScript, JS, Python, Go</div>
-        </div>
-        <a href="https://www.nuget.org/packages/LivingDocs.Mcp" target="_blank" class="btn-pricing btn-free">
-          Install Free →
-        </a>
+<!-- ══ SLA ══ -->
+<section class="sla-section" id="sla">
+  <div class="sla-inner wrap">
+    <div class="tag-label" style="margin-bottom:16px">Service level</div>
+    <h2 class="sla-title">SLA &amp; Support</h2>
+    <div class="sla-grid">
+      <div class="sla-block">
+        <h4>Response times</h4>
+        <ul>
+          <li>Bug reports — <strong>48 hours</strong></li>
+          <li>Security issues — <strong>24 hours</strong></li>
+          <li>Feature requests — <strong>5 business days</strong></li>
+          <li>Enterprise — <strong>12 hours</strong></li>
+        </ul>
       </div>
-
-      <!-- Pro -->
-      <div class="pricing-card featured reveal">
-        <span class="pricing-badge badge-pro">Pro</span>
-        <div class="pricing-price pro">$10</div>
-        <div class="pricing-period">per month · <span style="color:var(--accent);">7-day free trial</span></div>
-        <p class="pricing-desc">For teams who want docs that stay in sync — in your repo or Confluence.</p>
-        <div class="pricing-feats">
-          <div class="pricing-feat feat-pro">Everything in Free</div>
-          <div class="pricing-feat feat-pro">Write docs to .md files with timestamps</div>
-          <div class="pricing-feat feat-pro">Scan all repos in a GitHub org</div>
-          <div class="pricing-feat feat-pro">Sync docs to Confluence automatically</div>
-          <div class="pricing-feat feat-pro">Instant activation via Polar.sh</div>
-        </div>
-        <a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank" class="btn-pricing btn-pro-buy">
-          Start 7-Day Free Trial →
-        </a>
+      <div class="sla-block">
+        <h4>Support channels</h4>
+        <ul>
+          <li><a href="https://github.com/dinesh-mys/livingdocs/issues" style="color:var(--ink-mid)">GitHub Issues</a></li>
+          <li><a href="mailto:dinesh@novaders.com" style="color:var(--ink-mid)">dinesh@novaders.com</a></li>
+          <li><a href="https://github.com/dinesh-mys/livingdocs/discussions" style="color:var(--ink-mid)">GitHub Discussions</a></li>
+        </ul>
       </div>
-
-      <!-- Enterprise -->
-      <div class="pricing-card enterprise reveal">
-        <span class="pricing-badge badge-ent">Enterprise</span>
-        <div class="pricing-price ent">Custom</div>
-        <div class="pricing-period">annual or one-time</div>
-        <p class="pricing-desc">For large teams needing air-gapped deployments and bring-your-own LLM.</p>
-        <div class="pricing-feats">
-          <div class="pricing-feat feat-ent">Everything in Pro</div>
-          <div class="pricing-feat feat-ent">Offline license — no internet required</div>
-          <div class="pricing-feat feat-ent">Azure OpenAI / on-prem LLM support</div>
-          <div class="pricing-feat feat-ent">Self-contained binary (no .NET SDK)</div>
-          <div class="pricing-feat feat-ent">Priority support &amp; custom invoicing</div>
-        </div>
-        <a href="mailto:dinesh@novaders.com?subject=LivingDocs Enterprise" class="btn-pricing btn-ent">
-          Contact Us →
-        </a>
+      <div class="sla-block">
+        <h4>Uptime</h4>
+        <ul>
+          <li>Runs as a local MCP server — <strong>no hosted infrastructure</strong></li>
+          <li>NuGet availability follows NuGet.org SLA</li>
+        </ul>
       </div>
+    </div>
+    <p class="sla-note">Last updated: 2026-05-22 · Novaders LLP</p>
+  </div>
+</section>
 
+<!-- ══ FINAL CTA ══ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-headline-block reveal">
+      <div class="cta-overline">Stop losing knowledge</div>
+      <h2 class="cta-headline">
+        Stop losing knowledge<br/>every time someone<br/>leaves a <em>meeting.</em>
+      </h2>
+      <p class="cta-sub">
+        LivingDocs gives your engineering team institutional memory — <strong>the kind that doesn't walk out the door,</strong> sit unread in Confluence, or get buried in a Slack thread from 2023.
+      </p>
+      <div class="cta-buttons">
+        <a href="https://www.nuget.org/packages/LivingDocs.Mcp" target="_blank" class="btn-cta-primary">
+          Start Free
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="mailto:dinesh@novaders.com?subject=LivingDocs Demo" class="btn-cta-secondary">Book a Demo</a>
+        <a href="https://github.com/dinesh-mys/livingdocs" class="btn-cta-ghost" target="_blank">View on GitHub →</a>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="sla" style="background:var(--surface2); border-top:1px solid var(--border); padding:80px 48px;">
-  <div style="max-width:760px; margin:0 auto;">
-    <span class="section-label">// service level agreement</span>
-    <h2 class="section-title" style="font-size:32px; margin-top:12px;">SLA &amp; Support</h2>
-    <div style="color:var(--muted); font-size:15px; line-height:1.8; margin-top:24px;">
-      <p><strong style="color:var(--text);">Response times</strong></p>
-      <ul style="margin:12px 0 24px 20px;">
-        <li>Bug reports — acknowledged within <strong style="color:var(--text);">48 hours</strong></li>
-        <li>Security issues — acknowledged within <strong style="color:var(--text);">24 hours</strong></li>
-        <li>Feature requests — reviewed within <strong style="color:var(--text);">5 business days</strong></li>
-        <li>Enterprise support — priority response within <strong style="color:var(--text);">12 hours</strong></li>
-      </ul>
-      <p><strong style="color:var(--text);">Support channels</strong></p>
-      <ul style="margin:12px 0 24px 20px;">
-        <li>GitHub Issues — <a href="https://github.com/dinesh-mys/livingdocs/issues" style="color:var(--accent);">github.com/dinesh-mys/livingdocs/issues</a></li>
-        <li>Email — <a href="mailto:dinesh@novaders.com" style="color:var(--accent);">dinesh@novaders.com</a></li>
-        <li>GitHub Discussions — <a href="https://github.com/dinesh-mys/livingdocs/discussions" style="color:var(--accent);">github.com/dinesh-mys/livingdocs/discussions</a></li>
-      </ul>
-      <p><strong style="color:var(--text);">Uptime</strong></p>
-      <ul style="margin:12px 0 24px 20px;">
-        <li>LivingDocs runs as a local MCP server — no hosted infrastructure, no downtime dependency</li>
-        <li>NuGet package availability follows NuGet.org SLA</li>
-      </ul>
-      <p style="margin-top:24px; font-size:13px;">Last updated: 2026-05-19 · Novaders LLP</p>
-    </div>
-  </div>
-</section>
-
+<!-- ══ FOOTER ══ -->
 <footer>
-  <a href="#" class="footer-logo"><img src="/logo.svg" alt="LivingDocs" height="48" style="display:block;" /></a>
+  <a href="#" class="footer-logo">
+    <img src="/logo.svg" alt="LivingDocs" />
+  </a>
+  <div class="footer-chips">
+    <span class="footer-chip">MIT Licensed</span>
+    <span class="footer-chip">Built on Claude</span>
+    <span class="footer-chip">Ships as MCP server</span>
+    <span class="footer-chip">No infrastructure required</span>
+  </div>
   <ul class="footer-links">
     <li><a href="https://github.com/dinesh-mys/livingdocs" target="_blank">GitHub</a></li>
     <li><a href="https://www.nuget.org/packages/LivingDocs.Mcp" target="_blank">NuGet</a></li>
-    <li><a href="https://github.com/dinesh-mys/livingdocs/issues" target="_blank">Issues</a></li>
-    <li><a href="https://github.com/dinesh-mys/livingdocs/discussions" target="_blank">Discussions</a></li>
-    <li><a href="https://buy.polar.sh/polar_cl_LcRKdosjt3TwpUkKBSoDOPOP6ea6ArOfKpyB91MSdiM" target="_blank">Pro</a></li>
-    <li><a href="mailto:dinesh@novaders.com?subject=LivingDocs Enterprise">Enterprise</a></li>
-    <li><a href="/privacy" target="_blank">Privacy Policy</a></li>
-    <li><a href="/terms" target="_blank">Terms of Service</a></li>
+    <li><a href="https://polar.sh/novaders-llp/livingdocs" target="_blank">Pro</a></li>
+    <li><a href="/privacy">Privacy Policy</a></li>
+    <li><a href="/terms">Terms of Service</a></li>
   </ul>
-  <span class="footer-copy">MIT License · Built by Novaders LLP</span>
+  <div class="footer-copy">© 2026 Novaders LLP</div>
 </footer>
 
 <script>
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const parent = tab.closest('.install-block');
-      parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      tab.classList.add('active');
-      parent.querySelector('#tab-' + tab.dataset.tab).classList.add('active');
-    });
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const children = el.querySelectorAll('.stat-card, .how-step, .feat, .pricing-card, .int-card');
+    if (children.length) {
+      children.forEach((c, i) => {
+        c.style.opacity = '0';
+        c.style.transform = 'translateY(24px)';
+        c.style.transition = `opacity 0.55s ${i * 0.08}s ease, transform 0.55s ${i * 0.08}s ease`;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          c.style.opacity = '1';
+          c.style.transform = 'translateY(0)';
+        }));
+      });
+    }
+    el.classList.add('in');
+    io.unobserve(el);
   });
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
 <script>
-  fetch('https://livingdocs-web.vercel.app/api/track', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ page: window.location.pathname, referrer: document.referrer }),
-    keepalive: true,
-  }).catch(() => {});
+fetch('https://livingdocs-web.vercel.app/api/track', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ page: window.location.pathname, referrer: document.referrer }),
+  keepalive: true,
+}).catch(() => {});
 </script>
 
 </body>
