@@ -560,13 +560,12 @@
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
 
-  <div class="badge">MCP Server · Claude Desktop · Claude Code · GitHub Copilot</div>
+  <div class="badge">MCP Server · Claude Desktop · Claude Code · GitHub Copilot · Slack · Teams · Email</div>
 
   <h1>Docs that<br/><em>never go stale</em></h1>
 
   <p class="hero-sub">
-    AI-powered documentation health monitor.<br/>
-    Detects stale code comments and suggests updates using Claude.
+    AI-powered documentation health monitor. Detects stale comments, finds knowledge gaps, flags departure risk, and makes your Slack, Teams, and email searchable — all via Claude.
   </p>
 
   <div class="hero-actions">
@@ -577,13 +576,6 @@
     <a href="https://github.com/dinesh-mys/livingdocs" target="_blank" class="btn-secondary">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.66-.22.66-.48v-1.7C6.73 19.91 6.14 18 6.14 18c-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 7.4c.85.004 1.71.115 2.51.337 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85v2.74c0 .27.16.58.67.48A10.01 10.01 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
       View on GitHub
-    </a>
-  </div>
-
-  <div style="margin: 24px 0 8px; display:flex; justify-content:center;">
-    <a href="https://www.producthunt.com/products/livingdocs?utm_source=embed&utm_medium=post_embed" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:#ff6154;color:#fff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;font-family:sans-serif;">
-      <svg width="16" height="16" viewBox="0 0 40 40" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M20 0C8.954 0 0 8.954 0 20s8.954 20 20 20 20-8.954 20-20S31.046 0 20 0zm5 20a5 5 0 01-5 5h-5v5h-4V10h9a5 5 0 015 5v5z"/></svg>
-      Find us on Product Hunt
     </a>
   </div>
 
@@ -611,16 +603,17 @@
         <div><span class="t-prompt">$ </span><span class="t-cmd">livingdocs-mcp scan /path/to/your/repo</span></div>
         <div>&nbsp;</div>
         <div><span class="t-comment">Scanning /path/to/repo ...</span></div>
-        <div><span class="t-key">Files examined</span> <span class="t-comment">:</span> <span class="t-val">12</span></div>
-        <div><span class="t-key">Stale docs    </span> <span class="t-comment">:</span> <span class="t-warn">2</span></div>
+        <div><span class="t-key">Files examined</span> <span class="t-comment">:</span> <span class="t-val">48</span>  <span class="t-key">Stale docs</span><span class="t-comment">:</span> <span class="t-warn">3</span>  <span class="t-key">Gaps</span><span class="t-comment">:</span> <span class="t-bar-full">7</span></div>
         <div>&nbsp;</div>
         <div><span class="t-bar-full">[██████████]</span><span class="t-warn">  100%</span><span class="t-cmd">  src/Tax.cs</span></div>
-        <div class="t-indent"><span class="t-comment">doc updated : 2024-09-01</span></div>
-        <div class="t-indent"><span class="t-comment">code changed: 2025-01-15</span></div>
+        <div class="t-indent"><span class="t-comment">doc updated : 2024-09-01 · code changed: 2025-01-15</span></div>
         <div>&nbsp;</div>
-        <div><span class="t-bar-part">[████░░░░░░]</span><span class="t-warn">   40%</span><span class="t-cmd">  src/Auth.cs</span></div>
-        <div class="t-indent"><span class="t-comment">doc updated : 2024-12-01</span></div>
-        <div class="t-indent"><span class="t-comment">code changed: 2025-01-28</span></div>
+        <div><span class="t-comment">Knowledge gaps (undocumented, ranked by activity):</span></div>
+        <div><span class="t-warn">  1.</span><span class="t-cmd">  src/PaymentService.cs </span><span class="t-comment">· 47 commits · last: Alice Chen</span></div>
+        <div><span class="t-warn">  2.</span><span class="t-cmd">  src/AuthMiddleware.cs </span><span class="t-comment">· 31 commits · last: Bob Smith</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-comment">Departure risk:</span></div>
+        <div><span class="t-bar-full">  ⚠</span><span class="t-cmd">  src/PaymentService.cs</span><span class="t-comment"> — Alice owns 78% of commits</span></div>
       </div>
     </div>
   </div>
@@ -631,7 +624,7 @@
     <div class="reveal">
       <span class="section-label">// tools</span>
       <h2 class="section-title">Everything you need<br/>to keep docs healthy</h2>
-      <p class="section-desc">Three free tools, two powerful Pro capabilities. Plug into your workflow via MCP.</p>
+      <p class="section-desc">Five free tools, six powerful Pro capabilities. Plug into your workflow via MCP.</p>
     </div>
     <div class="tools-grid reveal">
       <div class="tool-card">
@@ -642,12 +635,22 @@
       <div class="tool-card">
         <span class="tool-tier tier-free">Free</span>
         <div class="tool-name"><code>query_docs</code></div>
-        <p class="tool-desc">Answer natural-language questions about your codebase using its doc comments. Ask Claude what a module does.</p>
+        <p class="tool-desc">Answer natural-language questions about your codebase using its doc comments — plus any indexed Slack, Teams, or email.</p>
       </div>
       <div class="tool-card">
         <span class="tool-tier tier-free">Free</span>
         <div class="tool-name"><code>suggest_doc_update</code></div>
         <p class="tool-desc">Ask Claude to rewrite a stale doc comment with an updated, accurate description based on the current code.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-free">Free</span>
+        <div class="tool-name"><code>detect_gaps</code></div>
+        <p class="tool-desc">Find source files with no documentation at all, ranked by git commit frequency. Prioritise what matters most to document first.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-free">Free</span>
+        <div class="tool-name"><code>departure_risk</code></div>
+        <p class="tool-desc">Bus factor analysis. Flags files where one author owns ≥60% of commits — before that person leaves the team.</p>
       </div>
       <div class="tool-card">
         <span class="tool-tier tier-pro">Pro</span>
@@ -659,6 +662,26 @@
         <div class="tool-name"><code>scan_org</code></div>
         <p class="tool-desc">Scan all repos in a GitHub org and return an org-wide staleness report. Track documentation health at scale.</p>
       </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>write_docs</code></div>
+        <p class="tool-desc">Generate full documentation files for undocumented code and append them to Markdown files with timestamps.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>index_slack</code></div>
+        <p class="tool-desc">Fetch messages from a Slack channel and add them to the repo knowledge index. Threads are grouped so context is preserved.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>index_teams</code></div>
+        <p class="tool-desc">Pull messages from a Microsoft Teams channel via Graph API and make them searchable alongside code docs.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-tier tier-pro">Pro</span>
+        <div class="tool-name"><code>index_email</code></div>
+        <p class="tool-desc">Fetch emails from any IMAP mailbox — Gmail, Outlook, or any provider. Engineering decisions in email become searchable instantly.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -667,7 +690,7 @@
   <div class="section-inner">
     <div class="reveal">
       <span class="section-label">// how it works</span>
-      <h2 class="section-title">From stale to sharp<br/>in three steps</h2>
+      <h2 class="section-title">From scattered to<br/>searchable in minutes</h2>
     </div>
     <div class="steps">
       <div class="step reveal">
@@ -677,13 +700,18 @@
       </div>
       <div class="step reveal">
         <div class="step-num">02</div>
-        <div class="step-title">Scan for staleness</div>
-        <p class="step-desc">LivingDocs compares when doc comments were last updated vs when code changed. Returns a staleness score per file.</p>
+        <div class="step-title">Scan &amp; detect gaps</div>
+        <p class="step-desc">LivingDocs finds stale docs, undocumented hotspot files, and single points of knowledge — using git history as signal.</p>
       </div>
       <div class="step reveal">
         <div class="step-num">03</div>
         <div class="step-title">Claude writes the fix</div>
-        <p class="step-desc">Ask Claude to suggest or directly apply doc updates. It reads the current code and rewrites comments to match reality.</p>
+        <p class="step-desc">Ask Claude to rewrite stale comments, generate docs for undocumented files, or answer questions across code, Slack, and email.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div class="step-title">Connect all knowledge</div>
+        <p class="step-desc">Index Slack channels, Teams conversations, and email folders. Everything — code docs, chat, email — becomes one searchable knowledge base.</p>
       </div>
     </div>
   </div>
@@ -782,6 +810,21 @@
         <div class="integration-name">Confluence <span style="color:var(--amber);font-size:11px;">Pro</span></div>
         <p class="integration-desc">Automatically sync updated docs to Confluence pages. Creates pages that don't yet exist.</p>
       </div>
+      <div class="integration-card">
+        <div class="integration-icon" style="font-size:16px;">💬</div>
+        <div class="integration-name">Slack <span style="color:var(--amber);font-size:11px;">Pro</span></div>
+        <p class="integration-desc">Index channel messages into the repo knowledge base. Threads grouped by context. Requires <code style="font-size:11px;">SLACK_BOT_TOKEN</code>.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon" style="font-size:16px;">🟦</div>
+        <div class="integration-name">Microsoft Teams <span style="color:var(--amber);font-size:11px;">Pro</span></div>
+        <p class="integration-desc">Pull channel messages via Microsoft Graph API. Requires Azure AD app with ChannelMessage.Read.All.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon" style="font-size:16px;">📧</div>
+        <div class="integration-name">Email / IMAP <span style="color:var(--amber);font-size:11px;">Pro</span></div>
+        <p class="integration-desc">Fetch from any IMAP mailbox — Gmail, Outlook, or self-hosted. Engineering decisions buried in email, made searchable.</p>
+      </div>
     </div>
     <div style="margin-top: 56px;" class="reveal">
       <span class="section-label">// supported languages</span>
@@ -802,12 +845,16 @@
     <div class="pro-card reveal">
       <div>
         <span class="section-label">// pro tier</span>
-        <h2 class="pro-title">Scale to your entire<br/><em>organisation</em></h2>
+        <h2 class="pro-title">Knowledge that stays<br/><em>with your team</em></h2>
         <div class="pro-price">$10<span>/month</span></div>
-        <p class="pro-desc">Pro unlocks org-wide scanning and automated Confluence sync. Perfect for teams managing docs across dozens of repos.</p>
+        <p class="pro-desc">Pro unlocks connectors, org-wide scanning, and automated Confluence sync. Keep institutional knowledge searchable — no matter where it lives.</p>
         <div class="pro-features">
+          <div class="pro-feat">Index Slack, Teams, and email into your repo knowledge base</div>
+          <div class="pro-feat">Find undocumented files ranked by git activity</div>
+          <div class="pro-feat">Bus factor alerts before key engineers leave</div>
           <div class="pro-feat">Scan all repos in a GitHub org at once</div>
           <div class="pro-feat">Write docs back to Confluence automatically</div>
+          <div class="pro-feat">Generate full doc files for undocumented code</div>
           <div class="pro-feat">License key via Polar.sh — instant activation</div>
         </div>
       </div>
@@ -826,8 +873,6 @@
     <li><a href="https://github.com/dinesh-mys/livingdocs/issues" target="_blank">Issues</a></li>
     <li><a href="https://github.com/dinesh-mys/livingdocs/discussions" target="_blank">Discussions</a></li>
     <li><a href="https://polar.sh/novaders-llp/livingdocs" target="_blank">Pro</a></li>
-    <li><a href="https://dinesh-mys.github.io/livingdocs-web/privacy.html" target="_blank">Privacy Policy</a></li>
-    <li><a href="https://dinesh-mys.github.io/livingdocs-web/terms.html" target="_blank">Terms of Service</a></li>
   </ul>
   <span class="footer-copy">MIT License · Built by Novaders LLP</span>
 </footer>
