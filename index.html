@@ -253,7 +253,9 @@ h1.hero-title em { font-style: italic; font-weight: 400; color: var(--ink-mid); 
 .feat:hover { background: var(--bg); }
 .feat-icon { width: 40px; height: 40px; background: var(--ink); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
 .feat-icon svg { width: 18px; height: 18px; fill: var(--accent); }
-.feat-name { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; margin-bottom: 10px; }
+.feat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.feat-name { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
+.feat-badge { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--accent); padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
 .feat-desc { font-size: 14px; line-height: 1.7; color: var(--ink-soft); font-weight: 300; }
 
 /* ═══════════════════════════════════════
@@ -568,17 +570,17 @@ footer {
       </div>
       <div class="feat">
         <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
-        <div class="feat-name">Slack &amp; Teams connector</div>
+        <div class="feat-header"><div class="feat-name">Slack &amp; Teams connector</div><span class="feat-badge">Pro</span></div>
         <p class="feat-desc">That architectural decision made in a Slack thread 18 months ago? Indexed, searchable, retrievable in seconds.</p>
       </div>
       <div class="feat">
         <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
-        <div class="feat-name">Email connector</div>
+        <div class="feat-header"><div class="feat-name">Email connector</div><span class="feat-badge">Pro</span></div>
         <p class="feat-desc">Engineering decisions buried in email chains become part of your knowledge base automatically. Gmail, Outlook, any IMAP provider.</p>
       </div>
       <div class="feat">
         <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
-        <div class="feat-name">Confluence sync</div>
+        <div class="feat-header"><div class="feat-name">Confluence sync</div><span class="feat-badge">Pro</span></div>
         <p class="feat-desc">Updated docs written back to Confluence automatically. No copy-paste. No drift. Pages created if they don't exist.</p>
       </div>
     </div>
