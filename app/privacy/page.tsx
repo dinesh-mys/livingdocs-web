@@ -89,6 +89,19 @@ export default function PrivacyPolicy() {
             </a>.
           </p>
         </div>
+
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">8. Anonymous product analytics</h2>
+          <p>
+            The LivingDocs CLI / MCP server sends anonymous usage events (install, server start,
+            successful index, and when an upgrade prompt is shown) to help us understand which steps
+            people complete. These events contain a random installation ID, the app version, and your
+            operating system &mdash; never your code, file paths, repository names, or any personal
+            information. To opt out, set the environment variable{" "}
+            <code className="text-sm bg-gray-100 px-1 rounded">DO_NOT_TRACK=1</code> or{" "}
+            <code className="text-sm bg-gray-100 px-1 rounded">LIVINGDOCS_TELEMETRY=off</code>.
+          </p>
+        </div>
       </section>
     </main>
   );
