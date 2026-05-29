@@ -756,7 +756,8 @@
       const city = v.city || '—';
       const country = v.country || '';
       const page = v.page || '/';
-      const ref = v.referrer ? new URL(v.referrer).hostname : '—';
+      let ref = '—';
+      try { ref = v.referrer ? new URL(v.referrer).hostname : '—'; } catch {}
       const ip = v.ip ? v.ip.replace(/\.\d+$/, '.***') : '—';
 
       return `<tr>
