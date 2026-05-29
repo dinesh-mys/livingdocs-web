@@ -1,10 +1,11 @@
 export const config = { runtime: 'edge' };
 
-async function neonQuery(hostname, password, query) {
-  const res = await fetch(`https://${hostname}/sql`, {
+async function neonQuery(connectionString, query) {
+  const url = new URL(connectionString);
+  const res = await fetch(`https://${url.hostname}/sql`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${password}`,
+      'Neon-Connection-String': connectionString,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ query, params: [] }),
@@ -20,11 +21,9 @@ export default async function handler(req) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const dbUrl = new URL(process.env.DATABASE_URL);
-  const hostname = dbUrl.hostname;
-  const password = dbUrl.password;
+  const connectionString = process.env.DATABASE_URL;
 
-  const data = await neonQuery(hostname, password,
+  const data = await neonQuery(connectionString,
     `SELECT ts, ip, country, city, page, referrer, ua
      FROM visits
      ORDER BY ts DESC
@@ -43,7 +42,7 @@ export default async function handler(req) {
   // Product funnel: distinct installs per event. Tolerates a missing events table.
   let funnel = { first_run: 0, mcp_started: 0, index_success: 0, upsell_shown: 0 };
   try {
-    const funnelData = await neonQuery(hostname, password,
+    const funnelData = await neonQuery(connectionString,
       `SELECT event, COUNT(DISTINCT install_id) AS installs
        FROM events
        GROUP BY event`);
