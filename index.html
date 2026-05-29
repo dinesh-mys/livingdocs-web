@@ -812,7 +812,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
 <script>
-fetch('https://livingdocs-web.vercel.app/api/track', {
+fetch('https://livingdocs-web-lake.vercel.app/api/track', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ page: window.location.pathname, referrer: document.referrer }),
