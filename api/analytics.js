@@ -1,5 +1,17 @@
 export const config = { runtime: 'edge' };
 
+async function neonQuery(hostname, password, query) {
+  const res = await fetch(`https://${hostname}/sql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${password}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query, params: [] }),
+  });
+  return res.json();
+}
+
 export default async function handler(req) {
   const url = new URL(req.url);
   const token = req.headers.get('x-admin-token') || url.searchParams.get('token');
@@ -9,23 +21,15 @@ export default async function handler(req) {
   }
 
   const dbUrl = new URL(process.env.DATABASE_URL);
+  const hostname = dbUrl.hostname;
+  const password = dbUrl.password;
 
-  const res = await fetch(`https://${dbUrl.hostname}/sql`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${dbUrl.password}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: `SELECT ts, ip, country, city, page, referrer, ua
-              FROM visits
-              ORDER BY ts DESC
-              LIMIT 5000`,
-      params: [],
-    }),
-  });
+  const data = await neonQuery(hostname, password,
+    `SELECT ts, ip, country, city, page, referrer, ua
+     FROM visits
+     ORDER BY ts DESC
+     LIMIT 5000`);
 
-  const data = await res.json();
   const visits = (data.rows || []).map(r => ({
     ts: Number(r.ts),
     ip: r.ip,
@@ -36,7 +40,19 @@ export default async function handler(req) {
     ua: r.ua,
   }));
 
-  return new Response(JSON.stringify({ visits }), {
+  // Product funnel: distinct installs per event. Tolerates a missing events table.
+  let funnel = { first_run: 0, mcp_started: 0, index_success: 0, upsell_shown: 0 };
+  try {
+    const funnelData = await neonQuery(hostname, password,
+      `SELECT event, COUNT(DISTINCT install_id) AS installs
+       FROM events
+       GROUP BY event`);
+    for (const r of funnelData.rows || []) {
+      if (r.event in funnel) funnel[r.event] = Number(r.installs);
+    }
+  } catch {}
+
+  return new Response(JSON.stringify({ visits, funnel }), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
