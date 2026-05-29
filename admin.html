@@ -636,7 +636,7 @@
 
     // Subtitle
     document.getElementById('header-subtitle').textContent =
-      `livingdocs.vercel.app — ${visits.length} total visits`;
+      `${window.location.hostname} — ${visits.length} total visits`;
 
     // Stats
     const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
